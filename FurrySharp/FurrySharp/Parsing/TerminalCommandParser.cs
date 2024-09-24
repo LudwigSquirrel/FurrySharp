@@ -107,4 +107,9 @@ public static class TerminalCommands
     {
         output.ClearOutput();
     }
+    
+    public static void crash(Terminal output)
+    {
+        throw new Exception("OwO user made me crashy washy >w<");
+    }
 }

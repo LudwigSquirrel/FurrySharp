@@ -8,13 +8,14 @@ using TextWriter = FurrySharp.UI.Font.Writing.TextWriter;
 
 namespace FurrySharp.Test.WritingTests;
 
-public class TextWriterTests
+public class TextWriterTests : FurryGameBaseTest
 {
     public TextWriter TextWriter;
     
     [Test]
-    public void TextWriterTest()
+    public void ConstructorTest()
     {
-        TextWriter = new TextWriter(new Point(0,0), 10, 10, FontManager.InitMockFont());
+        TextWriter = new TextWriter(new Point(0,0), 10, 10, FontManager.InitFont(true));
+        Assert.Pass();
     }
 }

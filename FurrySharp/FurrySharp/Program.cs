@@ -1,25 +1,32 @@
 ﻿using System;
+using System.Threading;
 using FurrySharp.Logging;
 using FurrySharp.Resources;
+using Microsoft.Xna.Framework;
 
-namespace FurrySharp.Multiplatform
+namespace FurrySharp.Multiplatform;
+
+public static class Program
 {
-    public static class Program
+    public static readonly FurryGame FurryGame = new();
+
+    [STAThread]
+    static void Main()
     {
-        [STAThread]
-        static void Main()
+        RunGame();
+    }
+
+    public static void RunGame()
+    {
+        try
         {
-            try
-            {
-                ResourceManager.BaseDir = AppDomain.CurrentDomain.BaseDirectory;
-                using var game = new FurryGame();
-                game.Run();
-            }
-            catch (Exception ex)
-            {
-                DebugLogger.AddException(ex);
-                throw;
-            }
+            ResourceManager.BaseDir = AppDomain.CurrentDomain.BaseDirectory;
+            FurryGame.Run();
+        }
+        catch (Exception ex)
+        {
+            DebugLogger.AddException(ex);
+            throw;
         }
     }
 }

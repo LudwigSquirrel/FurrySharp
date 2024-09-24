@@ -42,11 +42,6 @@ namespace FurrySharp.UI.Font
 
             return new SpriteFont(height, width, fileName, lString);
         }
-        
-        public static SpriteFont InitMockFont(Language lang = Language.EN)
-        {
-            return new SpriteFont(8, 8, "font-white-apple-7x8", ENString);
-        }
 
         public static int GetCharacterWidth(bool forceEnglish = false)
         {
