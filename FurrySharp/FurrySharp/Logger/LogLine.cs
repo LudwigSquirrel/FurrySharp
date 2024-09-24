@@ -1,21 +1,22 @@
-﻿namespace FurrySharp.Logging;
-
-public enum LogLevel
+﻿namespace FurrySharp.Logging
 {
-    Debug,
-    Info,
-    Warning,
-    Error,
-    Critical
-}
-public struct LogLine
-{
-    public LogLevel LogLevel { get; private set; }
-    public string Message { get; internal set; }
-
-    public LogLine(LogLevel logLevel, string message)
+    public enum LogLevel
     {
-        LogLevel = logLevel;
-        Message = message;
+        Debug,
+        Info,
+        Warning,
+        Error,
+        Critical
+    }
+    public struct LogLine
+    {
+        public LogLevel LogLevel { get; private set; }
+        public string Message { get; internal set; }
+
+        public LogLine(LogLevel logLevel, string message)
+        {
+            LogLevel = logLevel;
+            Message = message;
+        }
     }
 }

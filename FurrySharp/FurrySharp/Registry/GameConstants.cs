@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.IO;
+using FurrySharp.Dialogue;
+using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Registry;
 
