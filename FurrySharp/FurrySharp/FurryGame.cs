@@ -63,33 +63,12 @@ public class FurryGame : Game, IStateSetter
         Terminal = new Terminal();
 
         Window.Title = "Furry Game";
-        CreateAndSetState<State>();
+        CreateAndSetState<SandboxState>();
     }
 
     protected override void LoadContent()
     {
-        // if (File.Exists($"{GameConstants.SavePath}InputConfig.dat"))
-        // {
-        //     using InputConfigLoader inputConfigWriter = new InputConfigLoader($"{GameConstants.SavePath}InputConfig.dat");
-        //     inputConfigWriter.LoadInputConfig();
-        // }
-        // else
-        // {
-        //     SetDefaultKeys();
-        //     using InputConfigWriter inputConfigWriter = new InputConfigWriter($"{GameConstants.SavePath}InputConfig.dat");
-        //     inputConfigWriter.WriteInputConfig();
-        // }
-
         ResourceManager.LoadResources(Content);
-
-        // CardDataManager.ReadCardData();
-        // DialogueManager.Reload();
-        //SpriteDrawer.LoadEffects(Content);
-        //
-        // foreach (var effect in GlobalState.AllEffects)
-        // {
-        //     effect.Load(Content, graphics.GraphicsDevice);
-        // }
     }
 
     protected override void UnloadContent()
@@ -152,7 +131,7 @@ public class FurryGame : Game, IStateSetter
     protected override void Draw(GameTime gameTime)
     {
         SpriteDrawer.BeginDraw();
-        // CurrentState.DrawState();
+        CurrentState.DrawState();
         if (GlobalState.ShowFPS)
         {
             FpsLabel.Text = $"FPS:{GameTimes.FPS}";
