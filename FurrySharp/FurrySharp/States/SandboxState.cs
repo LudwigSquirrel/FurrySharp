@@ -1,18 +1,25 @@
-﻿using FurrySharp.Entities.Player;
+﻿using FurrySharp.Entities;
+using FurrySharp.Entities.Player;
 
 namespace FurrySharp.States;
 
 public class SandboxState : State
 {
-    private Player player = new Player();
+    public EntityManager EntityManager = new();
+
+    public override void Create()
+    {
+        base.Create();
+        EntityManager.Spawn<Player>();
+    }
 
     public override void UpdateState()
     {
-        player.UpdatePlayer();
+        EntityManager.UpdateEntities();
     }
     
     public override void DrawState()
     {
-        player.DrawPlayer();
+        EntityManager.DrawEntities();
     }
 }

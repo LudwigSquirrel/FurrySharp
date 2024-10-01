@@ -25,7 +25,6 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Logger\" />
-      <Folder Include="Registry\" />
     </ItemGroup>
     <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
         <Message Text="Restoring dotnet tools" Importance="High"/>

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FurrySharp.Multiplatform;
 using FurrySharp.Resources;
+using FurrySharp.States;
 using FurrySharp.UI;
 using FurrySharp.UI.Font;
 
@@ -111,5 +113,38 @@ public static class TerminalCommands
     public static void crash(Terminal output)
     {
         throw new Exception("OwO user made me crashy washy >w<");
+    }
+    
+    public static void spawn(Terminal output, string entityName)
+    {
+        if (Program.FurryGame.CurrentState is SandboxState sandboxState)
+        {
+            var result = sandboxState.EntityManager.Spawn(entityName);
+            if (result)
+            {
+                output.PrintInfo($"Spawned entity {entityName}.");
+            }
+            else
+            {
+                output.PrintError($"Failed to spawn entity {entityName}.");
+            }
+        }
+    }
+    
+    public static void kill(Terminal output, int entityId)
+    {
+        if (Program.FurryGame.CurrentState is SandboxState sandboxState)
+        {
+            var entity = sandboxState.EntityManager.GetEntity(entityId);
+            var result = sandboxState.EntityManager.RemoveEntity(entity);
+            if (result)
+            {
+                output.PrintInfo($"Killed entity {entityId}.");
+            }
+            else
+            {
+                output.PrintError($"Failed to kill {entityId}.");
+            }
+        }
     }
 }

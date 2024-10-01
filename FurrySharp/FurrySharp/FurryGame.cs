@@ -52,6 +52,7 @@ public class FurryGame : Game, IStateSetter
     {
         InitGraphics();
         SpriteDrawer.Initialize(graphics.GraphicsDevice);
+        EntityRegistry.RegisterEntityTypes();
 
         //GlobalState.ResetValues();
 

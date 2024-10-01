@@ -1,17 +1,16 @@
 ﻿using FurrySharp.Drawing;
+using FurrySharp.Entities.Base;
 using FurrySharp.Input;
 using FurrySharp.Resources;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace FurrySharp.Entities.Player;
 
-public class Player
+public class Player : Entity
 {
     public Texture2D PlayerSprite;
-    public Vector2 Position;
 
-    public void UpdatePlayer()
+    public override void Update()
     {
         if (KeyInput.IsFunctionPressed(KeyFunctions.Up))
         {
@@ -31,7 +30,7 @@ public class Player
         }
     }
 
-    public void DrawPlayer()
+    public override void Draw()
     {
         PlayerSprite ??= ResourceManager.GetTexture("ludwig_player");
         SpriteDrawer.DrawSprite(PlayerSprite, Position);
