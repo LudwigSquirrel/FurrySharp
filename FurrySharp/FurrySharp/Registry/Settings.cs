@@ -21,7 +21,7 @@ public class Settings
 
     public Resolution Resolution { get; set; } = Resolution.Windowed;
 
-    public int Scale { get; set; } = 3;
+    public int PreferredWindowScale { get; set; } = 3;
 
     [JsonInclude]
     public Dictionary<KeyFunctions, RebindableKey> KeyBindings

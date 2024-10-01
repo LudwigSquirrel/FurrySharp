@@ -162,20 +162,31 @@ public class FurryGame : Game, IStateSetter
     {
         graphics.GraphicsProfile = GraphicsProfile.HiDef;
         graphics.IsFullScreen = false;
-
-        graphics.PreferredBackBufferWidth = GAME_WIDTH_IN_PIXELS;
-        graphics.PreferredBackBufferHeight = GAME_HEIGHT_IN_PIXELS;
+        
+        int displayWidth;
+        int displayHeight;
+        int scale;
         switch (GlobalState.Settings.Resolution)
         {
             case Resolution.Windowed:
                 graphics.IsFullScreen = false;
+                displayWidth = GAME_WIDTH_IN_PIXELS * GlobalState.Settings.PreferredWindowScale;
+                displayHeight = GAME_HEIGHT_IN_PIXELS * GlobalState.Settings.PreferredWindowScale;
+                scale = GlobalState.Settings.PreferredWindowScale;
                 break;
             case Resolution.Fullscreen:
-                // todo: fullscreen is blurry. How do we fix this?
                 graphics.IsFullScreen = true;
+                displayWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+                displayHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+                scale = MaximizeScale(displayWidth, displayHeight);
                 break;
+            default:
+                throw new Exception("This is just here to make the compiler happy. It should never™ be thrown.");
         }
 
+        graphics.PreferredBackBufferWidth = displayWidth;
+        graphics.PreferredBackBufferHeight = displayHeight;
+        SpriteDrawer.UpdateRenderDestination(displayWidth, displayHeight, scale);
         graphics.SynchronizeWithVerticalRetrace = true;
         // switch (GlobalState.settings.fps)
         // {
@@ -194,5 +205,13 @@ public class FurryGame : Game, IStateSetter
         // }
 
         graphics.ApplyChanges();
+
+        int MaximizeScale(int width, int height)
+        {
+            var scaleX = width / GAME_WIDTH_IN_PIXELS;
+            var scaleY = height / GAME_HEIGHT_IN_PIXELS;
+
+            return scale = Math.Min(scaleX, scaleY);
+        }
     }
 }
