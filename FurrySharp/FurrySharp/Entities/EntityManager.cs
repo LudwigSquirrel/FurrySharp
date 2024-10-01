@@ -8,11 +8,10 @@ namespace FurrySharp.Entities;
 
 public class EntityManager
 {
-    private int idCounter = 0;
+    private int idCounter;
     private List<Entity> onEntities = new(); // on screen, and being drawn
     private List<Entity> offEntities = new(); // off screen, and not being drawn
 
-    // todo: implement a way to remove entities.
     // todo: implement a way to pass parameters for initialization to entities.
     // this overload is for when you want to spawn an entity that you know the type of.
     public void Spawn<TEntityType>() where TEntityType : Entity, new()
