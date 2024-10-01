@@ -1,27 +1,27 @@
 ﻿using FurrySharp.Multiplatform;
 
-namespace FurrySharp.Test;
+namespace FurrySharp.Test.IntegrationTests;
 
-public class FurryGameBaseTest
+[TestFixture]
+public partial class IntegrationTests
 {
-    private FurryGame FurryGame => Program.FurryGame;
-    
-    [SetUp]
-    public void SetupGame()
+    protected FurryGame FurryGame => Program.FurryGame;
+
+    [OneTimeSetUp]
+    public void OneTimeSetup()
     {
-        Thread gameThread = new Thread(() =>
+        var gameThread = new Thread(() =>
         {
             Program.RunGame();
             // If the game exits, the test fails (or rather gets aborted but same same).
             Assert.Fail();
         });
         gameThread.Start();
-        // Wait for the game to start.
         Thread.Sleep(1000);
     }
-    
-    [TearDown]
-    public void TearDownGame()
+
+    [OneTimeTearDown]
+    public void Teardown()
     {
         FurryGame.Exit();
     }

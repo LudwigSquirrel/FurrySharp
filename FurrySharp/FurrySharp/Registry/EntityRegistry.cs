@@ -10,7 +10,7 @@ public static class EntityRegistry
 {
     private static Dictionary<string, Type> entityTypes = new();
     
-    public static void RegisterEntityTypes()
+    static EntityRegistry()
     {
         Assembly assembly = Assembly.GetExecutingAssembly();
         foreach (Type type in assembly.GetTypes())

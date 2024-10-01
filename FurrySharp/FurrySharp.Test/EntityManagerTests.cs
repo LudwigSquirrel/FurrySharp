@@ -1,28 +1,25 @@
-﻿using FurrySharp;
+﻿using FurrySharp.Entities;
 using FurrySharp.States;
-using FurrySharp.Test;
 
 namespace FurrySharp.Test;
 
-[TestFixture]
-public class EntityManagerTests : FurryGameBaseTest
+public class EntityManagerTests
 {
     [Test]
-    public void IntegrationTest()
+    public void EntityManagerTest()
     {
-        FurryGame.CreateAndSetState<SandboxState>();
-        var sandboxState = (SandboxState)FurryGame.CurrentState;
-        var result = sandboxState.EntityManager.Spawn("Player");
+        var entityManager = new EntityManager();
+        var result = entityManager.Spawn("Player");
         Assert.True(result);
-        result = sandboxState.EntityManager.Spawn("player");
+        result = entityManager.Spawn("player");
         Assert.True(result);
-        result = sandboxState.EntityManager.Spawn("your mom");
+        result = entityManager.Spawn("your mom");
         Assert.False(result);
-        var entity = sandboxState.EntityManager.GetEntity(0);
+        var entity = entityManager.GetEntity(0);
         Assert.NotNull(entity);
-        result = sandboxState.EntityManager.RemoveEntity(entity);
+        result = entityManager.RemoveEntity(entity);
         Assert.True(result);
-        entity = sandboxState.EntityManager.GetEntity(0);
+        entity = entityManager.GetEntity(0);
         Assert.Null(entity);
         Assert.Pass();
     }
