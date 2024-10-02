@@ -14,16 +14,20 @@ namespace FurrySharp.Resources;
 public static class ResourceManager
 {
     private static Dictionary<string, Texture2D> textures = new();
-    
+    private static Dictionary<string, string> music = new();
+    private static Dictionary<string, string> ambience = new();
+
     public static string BaseDir;
 
     public static bool LoadResources(ContentManager contentManager)
     {
         LoadTextures(contentManager);
+        LoadMusic();
+        LoadAmbience();
 
         return true;
     }
-    
+
     public static Texture2D GetTexture(string textureName, bool forceCorrectTexture = false, bool allowUnknown = false)
     {
         if (!forceCorrectTexture && GlobalState.GameMode != GameMode.Normal)
@@ -37,18 +41,61 @@ public static class ResourceManager
             {
                 DebugLogger.AddWarning($"Texture file called {textureName}.png not found!");
             }
+
             return null;
         }
 
         return textures[textureName];
     }
-    
+
+    public static string GetMusicPath(string musicName)
+    {
+        if (!music.ContainsKey(musicName))
+        {
+            DebugLogger.AddWarning($"Music file called {musicName}.ogg not found!");
+            return null;
+        }
+
+        return music[musicName];
+    }
+
+    public static string GetAmbiencePath(string ambienceName)
+    {
+        if (!ambience.ContainsKey(ambienceName))
+        {
+            DebugLogger.AddWarning($"Ambience file called {ambienceName}.ogg not found!");
+            return null;
+        }
+
+        return ambience[ambienceName];
+    }
+
     public static bool UnloadResources()
     {
         UnloadTextures();
         return true;
     }
-    
+
+    private static void LoadMusic()
+    {
+        foreach (FileInfo file in GetFiles("bgm"))
+        {
+            string key = Path.GetFileNameWithoutExtension(file.Name);
+
+            music[key] = file.FullName;
+        }
+    }
+
+    private static void LoadAmbience()
+    {
+        foreach (FileInfo file in GetFiles("ambience"))
+        {
+            string key = Path.GetFileNameWithoutExtension(file.Name);
+
+            ambience[key] = file.FullName;
+        }
+    }
+
     private static void LoadTextures(ContentManager content)
     {
         foreach (FileInfo file in GetFiles("textures"))
@@ -74,7 +121,7 @@ public static class ResourceManager
             texture.Value.Dispose();
         }
     }
-    
+
     private static IEnumerable<FileInfo> GetFiles(string dirName)
     {
         Matcher matcher = new();
@@ -84,7 +131,7 @@ public static class ResourceManager
 
         return matcher.GetResultsInFullPath(BaseDir).Select(s => new FileInfo(s));
     }
-    
+
     private static string GetFolderTree(FileInfo file)
     {
         string path = "";

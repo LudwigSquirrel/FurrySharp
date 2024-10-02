@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FurrySharp.Audio;
 using FurrySharp.Multiplatform;
 using FurrySharp.Resources;
 using FurrySharp.States;
@@ -146,5 +147,10 @@ public static class TerminalCommands
                 output.PrintError($"Failed to kill {entityId}.");
             }
         }
+    }
+    
+    public static void playm(Terminal output, string musicName)
+    {
+        AudioManager.PlaySong(musicName);
     }
 }

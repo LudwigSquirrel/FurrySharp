@@ -22,6 +22,10 @@ public class Settings
     public Resolution Resolution { get; set; } = Resolution.Windowed;
 
     public int PreferredWindowScale { get; set; } = 3;
+    
+    public float MusicVolumeScale { get; set; } = 1f;
+    
+    public float SFXVolumeScale { get; set; } = 1f;
 
     [JsonInclude]
     public Dictionary<KeyFunctions, RebindableKey> KeyBindings

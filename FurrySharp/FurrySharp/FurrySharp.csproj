@@ -13,6 +13,12 @@
     <ItemGroup>
         <None Remove="Icon.ico"/>
         <None Remove="Icon.bmp"/>
+        <None Update="Content\bgm\*">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="Content\ambience\*">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="Icon.ico"/>
@@ -22,6 +28,9 @@
         <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.0-rc.1.24431.7" />
         <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.1.303"/>
         <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303"/>
+        <PackageReference Include="NVorbis" Version="0.10.4">
+      <Aliases>TheCoolerVorbis</Aliases>
+      </PackageReference>
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Logger\" />

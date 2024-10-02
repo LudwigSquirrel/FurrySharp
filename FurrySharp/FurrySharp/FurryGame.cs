@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using FurrySharp.Audio;
 using FurrySharp.Drawing;
 using FurrySharp.Input;
 using FurrySharp.Registry;
@@ -13,7 +14,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using static FurrySharp.Registry.GameConstants;
-using TextWriter = FurrySharp.UI.Font.Writing.TextWriter;
 
 namespace FurrySharp;
 
@@ -74,6 +74,7 @@ public class FurryGame : Game, IStateSetter
     protected override void UnloadContent()
     {
         ResourceManager.UnloadResources();
+        AudioManager.StopSong();
     }
 
     protected override void Update(GameTime gameTime)
