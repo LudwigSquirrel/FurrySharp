@@ -17,15 +17,15 @@ public class SongPlayer
 
     public SongPlayer()
     {
-        ResetPlayer();
+        ResetPlayer(AudioChannels.Mono);
     }
 
-    private void ResetPlayer()
+    private void ResetPlayer(AudioChannels channels)
     {
         float volume = player?.Volume ?? 1f;
         player?.Stop();
         player?.Dispose();
-        player = new(44100, AudioChannels.Mono);
+        player = new(44100, channels);
         player.Volume = volume;
         player.BufferNeeded += BufferNeeded;
     }
@@ -63,9 +63,10 @@ public class SongPlayer
 
     public void Play(string song)
     {
-        ResetPlayer();
-        if (reader != null) reader.Dispose();
+        reader?.Dispose();
         reader = new VorbisReader(song);
+        ResetPlayer(reader.Channels == 1 ? AudioChannels.Mono : AudioChannels.Stereo);
+        
         BufferNeeded(null, null);
         if (player.State != SoundState.Playing)
         {
