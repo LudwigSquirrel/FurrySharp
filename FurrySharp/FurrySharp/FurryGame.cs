@@ -126,6 +126,7 @@ public class FurryGame : Game, IStateSetter
             GlobalState.ResolutionDirty = false;
         }
 
+        GameTimes.UpdateFPS(gameTime);
         base.Update(gameTime);
     }
 
