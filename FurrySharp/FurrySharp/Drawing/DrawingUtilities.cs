@@ -2,12 +2,13 @@ namespace FurrySharp.Drawing;
 
 public enum DrawOrder
 {
+    BG,             // The background tilemap layer.
     Front,          //
     Text,           // Text in dialogue.
-    BlackOverlay    // Black fadeout transition
+    BlackOverlay    // Black fadeout transition.
 }
 
-public class DrawingUtilites
+public class DrawingUtilities
 {
     public static float GetDrawingZ(DrawOrder order)
     {

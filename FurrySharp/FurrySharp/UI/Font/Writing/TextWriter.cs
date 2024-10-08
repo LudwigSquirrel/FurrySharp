@@ -45,7 +45,7 @@ public class TextWriter
 
     public void Draw()
     {
-        var drawingZ = DrawingUtilites.GetDrawingZ(DrawOrder.Text);
+        var drawingZ = DrawingUtilities.GetDrawingZ(DrawOrder.Text);
         var characterWidth = FontManager.GetCharacterWidth();
         var fontLineHeight = GameConstants.FontLineHeight;
         var dRect = new Rectangle(0, 0, characterWidth, fontLineHeight); // The destination rectangle for the text characters. 

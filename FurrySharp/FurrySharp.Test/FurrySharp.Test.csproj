@@ -22,4 +22,10 @@
       <ProjectReference Include="..\FurrySharp\FurrySharp.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="test.bmp">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

@@ -16,6 +16,7 @@ public static class ResourceManager
     private static Dictionary<string, Texture2D> textures = new();
     private static Dictionary<string, string> music = new();
     private static Dictionary<string, string> ambience = new();
+    private static Dictionary<string, string> map = new();
 
     public static string BaseDir;
 
@@ -24,6 +25,7 @@ public static class ResourceManager
         LoadTextures(contentManager);
         LoadMusic();
         LoadAmbience();
+        LoadMaps();
 
         return true;
     }
@@ -50,6 +52,11 @@ public static class ResourceManager
 
     public static string GetMusicPath(string musicName)
     {
+        if (music == null)
+        {
+            return null;
+        }
+
         if (!music.ContainsKey(musicName))
         {
             DebugLogger.AddWarning($"Music file called {musicName}.ogg not found!");
@@ -61,6 +68,11 @@ public static class ResourceManager
 
     public static string GetAmbiencePath(string ambienceName)
     {
+        if (ambience == null)
+        {
+            return null;
+        }
+
         if (!ambience.ContainsKey(ambienceName))
         {
             DebugLogger.AddWarning($"Ambience file called {ambienceName}.ogg not found!");
@@ -68,6 +80,17 @@ public static class ResourceManager
         }
 
         return ambience[ambienceName];
+    }
+
+    public static string GetMapPath(string mapName)
+    {
+        if (!map.ContainsKey(mapName))
+        {
+            DebugLogger.AddWarning($"Map directory called {mapName} not found!");
+            return null;
+        }
+
+        return map[mapName];
     }
 
     public static bool UnloadResources()
@@ -93,6 +116,16 @@ public static class ResourceManager
             string key = Path.GetFileNameWithoutExtension(file.Name);
 
             ambience[key] = file.FullName;
+        }
+    }
+
+    private static void LoadMaps()
+    {
+        var mapDirectories = Directory.GetDirectories(Path.Combine(BaseDir, "Content", "maps"));
+        foreach (var mapDirectory in mapDirectories)
+        {
+            var mapName = new DirectoryInfo(mapDirectory).Name;
+            map[mapName!] = mapDirectory;
         }
     }
 
