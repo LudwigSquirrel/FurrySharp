@@ -11,15 +11,18 @@ public class EntityManager
     private int idCounter;
     private List<Entity> onEntities = new(); // on screen, and being drawn
     private List<Entity> offEntities = new(); // off screen, and not being drawn
+    private CollisionGroups collisionGroups = new();
 
     // todo: implement a way to pass parameters for initialization to entities.
     // this overload is for when you want to spawn an entity that you know the type of.
     public void Spawn<TEntityType>() where TEntityType : Entity, new()
     {
-        onEntities.Add(new TEntityType()
+        var entity = new TEntityType()
         {
             InstanceId = idCounter++,
-        });
+        };
+        onEntities.Add(entity);
+        collisionGroups.Register(entity);
     }
 
     // this overload is for when you want to spawn an entity from a command or file.
@@ -39,6 +42,7 @@ public class EntityManager
 
         entity.InstanceId = idCounter++;
         onEntities.Add(entity);
+        collisionGroups.Register(entity);
         return true;
     }
 
@@ -75,6 +79,7 @@ public class EntityManager
     {
         var result = onEntities.Remove(entity);
         result = result || offEntities.Remove(entity);
+        result = result && collisionGroups.Unregister(entity);
         return result;
     }
 }

@@ -17,6 +17,7 @@ public static class ResourceManager
     private static Dictionary<string, string> music = new();
     private static Dictionary<string, string> ambience = new();
     private static Dictionary<string, string> map = new();
+    private static Dictionary<string, string> tilemaps = new();
 
     public static string BaseDir;
 
@@ -26,6 +27,7 @@ public static class ResourceManager
         LoadMusic();
         LoadAmbience();
         LoadMaps();
+        LoadTileMaps();
 
         return true;
     }
@@ -92,6 +94,17 @@ public static class ResourceManager
 
         return map[mapName];
     }
+    
+    public static string GetTileMapPath(string tileMapName)
+    {
+        if (!tilemaps.ContainsKey(tileMapName))
+        {
+            DebugLogger.AddWarning($"Tilemap directory called {tileMapName} not found!");
+            return null;
+        }
+
+        return tilemaps[tileMapName];
+    }
 
     public static bool UnloadResources()
     {
@@ -126,6 +139,16 @@ public static class ResourceManager
         {
             var mapName = new DirectoryInfo(mapDirectory).Name;
             map[mapName!] = mapDirectory;
+        }
+    }
+
+    private static void LoadTileMaps()
+    {
+        var mapDirectories = Directory.GetDirectories(Path.Combine(BaseDir, "Content", "tilemapdata"));
+        foreach (var mapDirectory in mapDirectories)
+        {
+            var mapName = new DirectoryInfo(mapDirectory).Name;
+            tilemaps[mapName!] = mapDirectory;
         }
     }
 

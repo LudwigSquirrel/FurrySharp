@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using FurrySharp.Audio;
 using FurrySharp.Drawing;
 using FurrySharp.Logging;
+using FurrySharp.Maps.Tiles;
 using FurrySharp.Resources;
 using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
@@ -22,11 +22,20 @@ public class MapInfo
     public string MapPath { get; private set; }
     public bool Critical { get; private set; }
     
-    public Spritesheet TileMap { get; private set; }
+    public Spritesheet TileSpritesheet { get; private set; }
 
     public List<TileMap> TileMaps { get; private set; }
+    
+    public TileInfo TileInfo { get; private set; }
 
     public MapSettings Settings { get; private set; }
+    
+    public static MapInfo FromResources(string name)
+    {
+        var path = ResourceManager.GetMapPath(name);
+        
+        return FromDir(path);
+    }
 
     public static MapInfo FromDir(string path, bool critical = false)
     {
@@ -47,7 +56,8 @@ public class MapInfo
         
         map.Settings = map.LoadJson<MapSettings>("settings") ?? new MapSettings();
 
-        map.TileMap = new Spritesheet(ResourceManager.GetTexture($"{map.Settings.TileMap}_tilemap"), TILE_SIZE, TILE_SIZE);
+        map.TileSpritesheet = new Spritesheet(ResourceManager.GetTexture($"{map.Settings.TileMap}_tilemap"), TILE_SIZE, TILE_SIZE);
+        map.TileInfo = TileInfo.FromResources(map.Settings.TileMap);
 
         return map;
     }
@@ -110,11 +120,11 @@ public class MapInfo
                     continue;
                 }
 
-                Rectangle source = TileMap.GetRect(tile);
+                Rectangle source = TileSpritesheet.GetRect(tile);
                 Point loc = TileToWorld(x, y);
                 Rectangle dest = new(loc.X, loc.Y, TILE_SIZE, TILE_SIZE);
 
-                SpriteDrawer.DrawSprite(TileMap.Tex, dest, source, z: z);
+                SpriteDrawer.DrawSprite(TileSpritesheet.Tex, dest, source, z: z);
             }
         }
     }

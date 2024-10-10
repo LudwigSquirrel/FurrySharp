@@ -19,7 +19,7 @@ public class SandboxState : State
     {
         base.Create();
         EntityManager.Spawn<Player>();
-        Map = MapLoader.LoadMap("debug");
+        Map = MapInfo.FromResources("debug");
         AudioManager.PlaySong(Map.Settings.Music);
     }
 
@@ -31,7 +31,6 @@ public class SandboxState : State
     public override void DrawState()
     {
         EntityManager.DrawEntities();
-        // todo: only the first row of tiles is drawn.
         Map.DrawLayer(new Rectangle(0,0, GAME_WIDTH_IN_PIXELS, GAME_HEIGHT_IN_PIXELS), (int)MapLayer.BG, DrawOrder.BG, false);
     }
 }
