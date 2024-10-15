@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FurrySharp.Entities.Base;
 using FurrySharp.Logging;
+using FurrySharp.Maps;
 using FurrySharp.Registry;
 
 namespace FurrySharp.Entities;
@@ -48,7 +49,6 @@ public class EntityManager
 
     public void UpdateEntities()
     {
-        // Assume I implemented a update method in the Entity class
         foreach (Entity entity in onEntities)
         {
             entity.Update();
@@ -60,6 +60,24 @@ public class EntityManager
         }
         
         // todo: implement a way to move entities between onEntities and offEntities.
+    }
+
+    public void PostUpdateEntities()
+    {
+        foreach (Entity entity in onEntities)
+        {
+            entity.PostUpdate();
+        }
+
+        foreach (Entity entity in offEntities)
+        {
+            entity.PostUpdate();
+        }
+    }
+
+    public void DoCollisions(MapInfo map = null)
+    {
+        collisionGroups.DoCollision(map);
     }
 
     public void DrawEntities()

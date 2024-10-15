@@ -16,6 +16,7 @@ public static class GlobalState
     public static readonly Settings Settings = Settings.Load();
     public static Language CurrentLanguage => Settings.Language;
     public static bool DrawTextWriterAreas = false;
+    public static bool DrawHitBoxes = true;
     public static bool ShowFPS = false;
     public static bool ShowTerminal = false;
     public static bool ResolutionDirty = false;

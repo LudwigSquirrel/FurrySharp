@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using FurrySharp.Drawing;
+using FurrySharp.Entities.Base;
 using FurrySharp.Logging;
 using FurrySharp.Maps.Tiles;
 using FurrySharp.Resources;
@@ -21,19 +22,19 @@ public class MapInfo
 {
     public string MapPath { get; private set; }
     public bool Critical { get; private set; }
-    
+
     public Spritesheet TileSpritesheet { get; private set; }
 
     public List<TileMap> TileMaps { get; private set; }
-    
+
     public TileInfo TileInfo { get; private set; }
 
     public MapSettings Settings { get; private set; }
-    
+
     public static MapInfo FromResources(string name)
     {
         var path = ResourceManager.GetMapPath(name);
-        
+
         return FromDir(path);
     }
 
@@ -53,7 +54,7 @@ public class MapInfo
         {
             map.TileMaps.Add(new TileMap(map.LoadBmp(layer.ToString())));
         }
-        
+
         map.Settings = map.LoadJson<MapSettings>("settings") ?? new MapSettings();
 
         map.TileSpritesheet = new Spritesheet(ResourceManager.GetTexture($"{map.Settings.TileMap}_tilemap"), TILE_SIZE, TILE_SIZE);
@@ -103,7 +104,6 @@ public class MapInfo
 
     public void DrawLayer(Rectangle bounds, int layer, DrawOrder order, bool ignoreEmpty)
     {
-        // todo: implement
         float z = DrawingUtilities.GetDrawingZ(order);
 
         Point tl = ToMapLoc(new(bounds.X, bounds.Y));
@@ -114,7 +114,7 @@ public class MapInfo
             for (int x = tl.X - 1; x < br.X + 1; x++)
             {
                 int tile = GetTile(layer, x, y);
-                
+
                 if (tile == 0 && ignoreEmpty)
                 {
                     continue;
@@ -133,14 +133,45 @@ public class MapInfo
     {
         return new(screenLoc.X / TILE_SIZE, screenLoc.Y / TILE_SIZE);
     }
-    
+
     public Point TileToWorld(int x, int y)
     {
         return new(x * TILE_SIZE, y * TILE_SIZE);
     }
-    
+
     public int GetTile(int layer, int x, int y)
     {
         return TileMaps[layer].GetTile(x, y);
+    }
+
+    public void Collide(Entity entity)
+    {
+        Point tl = ToMapLoc(new((int)entity.Position.X + entity.HitBox.X, (int)entity.Position.Y + entity.HitBox.Y));
+        Point br = ToMapLoc(new((int)MathF.Ceiling(entity.Position.X + entity.HitBox.Right), (int)MathF.Ceiling(entity.Position.Y + entity.HitBox.Bottom)));
+
+        for (int y = tl.Y; y <= br.Y; y++)
+        {
+            for (int x = tl.X; x <= br.X; x++)
+            {
+                int tile = GetTile((int)MapLayer.BG, x, y);
+
+                if (tile == 0)
+                {
+                    continue;
+                }
+
+                TileInfo.TileData data = TileInfo.GetData(tile);
+                Rectangle tileArea = new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                CollideTile(entity, data, tileArea);
+            }
+        }
+    }
+
+    public static void CollideTile(Entity entity, TileInfo.TileData tile, Rectangle tileArea)
+    {
+        if (tile.CollisionDirection != Touching.NONE)
+        {
+            EntityUtilities.SeparateEntityFromArea(entity, tileArea, tile.CollisionDirection, 16f);
+        }
     }
 }

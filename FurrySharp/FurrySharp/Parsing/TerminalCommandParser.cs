@@ -7,6 +7,7 @@ using FurrySharp.Resources;
 using FurrySharp.States;
 using FurrySharp.UI;
 using FurrySharp.UI.Font;
+using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Parsing;
 
@@ -152,5 +153,25 @@ public static class TerminalCommands
     public static void playm(Terminal output, string musicName)
     {
         AudioManager.PlaySong(musicName);
+    }
+    
+    public static void immovable(Terminal output, int entityId)
+    {
+        if (Program.FurryGame.CurrentState is SandboxState sandboxState)
+        {
+            var entity = sandboxState.EntityManager.GetEntity(entityId);
+            entity.Immovable = !entity.Immovable;
+            output.PrintInfo($"Set entity {entityId} to be {(entity.Immovable ? "movable" : "immovable")}.");
+        }
+    }
+    
+    public static void egoto(Terminal output, int entityId, float x, float y)
+    {
+        if (Program.FurryGame.CurrentState is SandboxState sandboxState)
+        {
+            var entity = sandboxState.EntityManager.GetEntity(entityId);
+            entity.Position = new Vector2(x, y);
+            output.PrintInfo($"Moved entity {entityId} to {x}, {y}.");
+        }
     }
 }

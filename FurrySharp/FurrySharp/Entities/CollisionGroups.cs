@@ -17,28 +17,34 @@ public class CollisionGroups
 
     private readonly Dictionary<Type, Group> groups = new();
     private readonly List<Entity> mapColliders = new();
+    private readonly List<Entity> mapEntities = new();
 
     public void Register(Entity entity)
     {
         Type t = entity.GetType();
-        
+
         // Iterate through all base types of the entity
         // Add the entity as a target for the colliders of the base types.
-        for(Type d = t; d != typeof(Entity); d = d.BaseType)
+        for (Type d = t; d != typeof(Entity); d = d.BaseType)
         {
             Get(d).Targets.Add(entity);
         }
 
         IEnumerable<CollisionAttribute> cs = t.GetCustomAttributes<CollisionAttribute>().ToArray();
 
-        if (cs.Any(c => c.MapCollision))
+        if (cs.Any(c => c.MapCollider))
         {
             mapColliders.Add(entity);
         }
 
+        if (cs.Any(c => c.MapEntity))
+        {
+            mapEntities.Add(entity);
+        }
+
         // Iterate through all collision attributes of the entity
         // Add the entity as a collider for the enumerated target types.
-        foreach(Type target in cs.SelectMany(c=>c.Types))
+        foreach (Type target in cs.SelectMany(c => c.Targets))
         {
             Get(target).Colliders.Add(entity);
         }
@@ -47,6 +53,7 @@ public class CollisionGroups
     public bool Unregister(Entity entity)
     {
         var result = mapColliders.Remove(entity);
+        result = mapEntities.Remove(entity) || result;
         foreach (var pair in groups)
         {
             /*
@@ -59,13 +66,38 @@ public class CollisionGroups
             result = pair.Value.Colliders.Remove(entity) || result;
             result = pair.Value.Targets.Remove(entity) || result;
         }
-        
+
         return result;
     }
 
     public void DoCollision(MapInfo map)
     {
-        // todo: implement collision detection.
+        if (map != null)
+        {
+            foreach (var entity in mapColliders)
+            {
+                map.Collide(entity);
+
+                foreach (var m in mapEntities.Where(m => m.HitBox.Intersects(entity.HitBox)))
+                {
+                    m.Collided(entity);
+                }
+            }
+        }
+
+        foreach (Group g in groups.Values)
+        {
+            foreach (Entity collider in g.Colliders)
+            {
+                foreach (Entity target in g.Targets.Where(e => !ReferenceEquals(e, collider)))
+                {
+                    if (collider.HitBox.Intersects(target.HitBox))
+                    {
+                        collider.Collided(target);
+                    }
+                }
+            }
+        }
     }
 
     public Group Get(Type t)

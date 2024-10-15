@@ -19,6 +19,7 @@ public class SandboxState : State
     {
         base.Create();
         EntityManager.Spawn<Player>();
+        EntityManager.GetEntity(0).Position = new Vector2(TILE_SIZE, TILE_SIZE); //todo: implement a better way to get access to entities.
         Map = MapInfo.FromResources("debug");
         AudioManager.PlaySong(Map.Settings.Music);
     }
@@ -26,6 +27,8 @@ public class SandboxState : State
     public override void UpdateState()
     {
         EntityManager.UpdateEntities();
+        EntityManager.DoCollisions(Map);
+        EntityManager.PostUpdateEntities();
     }
     
     public override void DrawState()

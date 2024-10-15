@@ -2,13 +2,23 @@
 using FurrySharp.Entities.Base;
 using FurrySharp.Input;
 using FurrySharp.Resources;
+using FurrySharp.Utilities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace FurrySharp.Entities.Player;
 
+[Collision(MapCollider = true)]
 public class Player : Entity
 {
     public Texture2D PlayerSprite;
+
+    public Player()
+    {
+        PlayerSprite = ResourceManager.GetTexture("ludwig_player");
+        BoundingBox = EntityUtilities.BoundingBoxFromTexture(PlayerSprite);
+        HitBox = new Rectangle(11, 16,11,12);
+    }
 
     public override void Update()
     {
@@ -32,7 +42,7 @@ public class Player : Entity
 
     public override void Draw()
     {
-        PlayerSprite ??= ResourceManager.GetTexture("ludwig_player");
+        base.Draw();
         SpriteDrawer.DrawSprite(PlayerSprite, Position);
     }
 

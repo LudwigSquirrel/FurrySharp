@@ -10,6 +10,7 @@ public class GameConstants
     public const int GAME_WIDTH_IN_PIXELS = 480;
     public const int GAME_HEIGHT_IN_PIXELS = 320;
     public const int TILE_SIZE = 32;
+    public const int SUPPORTED_TILE_COUNT = 255;
     
     public static readonly string SavePath;
     public static Color DebugTextAreaColor = new(128, 0, 0, 128);
