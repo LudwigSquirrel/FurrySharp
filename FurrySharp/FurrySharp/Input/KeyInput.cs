@@ -53,6 +53,7 @@ public static class KeyInput
     }
 
     private static Dictionary<Keys, InputState> KeyState;
+    private static Dictionary<Keys, bool> MockKeyDown;
     public static Dictionary<KeyFunctions, RebindableKey> RebindableKeys;
 
     static KeyInput()
@@ -60,7 +61,9 @@ public static class KeyInput
         // Initialize the dictionary with all keys to None
         // ReSharper disable once SuspiciousTypeConversion.Global
         var keysEnumerable = (Enum.GetValues(typeof(Keys)) as IEnumerable<Keys>);
-        KeyState = keysEnumerable!.ToDictionary(k => k, k => InputState.None);
+        var enumerable = keysEnumerable as Keys[] ?? keysEnumerable!.ToArray();
+        KeyState = enumerable!.ToDictionary(k => k, _ => InputState.None);
+        MockKeyDown = enumerable!.ToDictionary(k => k, _ => false);
         RebindableKeys = new Dictionary<KeyFunctions, RebindableKey>();
     }
 
@@ -73,7 +76,7 @@ public static class KeyInput
 
         foreach (Keys key in Enum.GetValues(typeof(Keys)))
         {
-            KeyState[key] = UpdateInput(KeyState[key], s.IsKeyDown(key));
+            KeyState[key] = UpdateInput(KeyState[key], s.IsKeyDown(key) || MockKeyDown[key]);
         }
     }
 
@@ -124,5 +127,10 @@ public static class KeyInput
     public static bool JustPressedFunction(KeyFunctions function)
     {
         return GetRebindableKeyState(function) == InputState.Pressed;
+    }
+
+    public static void MockHeld(Keys key)
+    {
+        MockKeyDown[key] = true;
     }
 }
