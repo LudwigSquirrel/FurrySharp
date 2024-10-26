@@ -21,14 +21,18 @@ public static class ResourceManager
 
     public static string BaseDir;
 
-    public static bool LoadResources(ContentManager contentManager)
+    public static bool LoadContentManagerResources(ContentManager contentManager)
     {
         LoadTextures(contentManager);
+        return true;
+    }
+
+    public static bool LoadOtherResources()
+    {
         LoadMusic();
         LoadAmbience();
         LoadMaps();
         LoadTileMaps();
-
         return true;
     }
 
