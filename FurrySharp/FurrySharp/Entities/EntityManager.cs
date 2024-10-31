@@ -14,22 +14,24 @@ public class EntityManager
     private List<Entity> offEntities = new(); // off screen, and not being drawn
     private CollisionGroups collisionGroups = new();
 
+    public MapInfo Map;
+
     // todo: implement a way to pass parameters for initialization to entities.
     // this overload is for when you want to spawn an entity that you know the type of.
-    public void Spawn<TEntityType>() where TEntityType : Entity, new()
+    public void Spawn<TEntityType>(out TEntityType entity) where TEntityType : Entity, new()
     {
-        var entity = new TEntityType()
+        entity = new TEntityType()
         {
             InstanceId = idCounter++,
+            Manager = this,
         };
         onEntities.Add(entity);
         collisionGroups.Register(entity);
     }
 
     // this overload is for when you want to spawn an entity from a command or file.
-    public bool Spawn(string name)
+    public bool Spawn(string name, out Entity entity)
     {
-        Entity entity;
         try
         {
             Type type = EntityRegistry.GetEntityType(name);
@@ -37,11 +39,13 @@ public class EntityManager
         }
         catch (Exception e)
         {
+            entity = null;
             DebugLogger.AddException(e);
             return false;
         }
 
         entity.InstanceId = idCounter++;
+        entity.Manager = this;
         onEntities.Add(entity);
         collisionGroups.Register(entity);
         return true;
@@ -75,9 +79,9 @@ public class EntityManager
         }
     }
 
-    public void DoCollisions(MapInfo map = null)
+    public void DoCollisions()
     {
-        collisionGroups.DoCollision(map);
+        collisionGroups.DoCollision(Map);
     }
 
     public void DrawEntities()

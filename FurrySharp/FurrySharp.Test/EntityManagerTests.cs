@@ -9,11 +9,11 @@ public class EntityManagerTests
     public void EntityManagerTest()
     {
         var entityManager = new EntityManager();
-        var result = entityManager.Spawn("Player");
+        var result = entityManager.Spawn("Player", out _);
         Assert.True(result);
-        result = entityManager.Spawn("player");
+        result = entityManager.Spawn("player", out _);
         Assert.True(result);
-        result = entityManager.Spawn("your mom");
+        result = entityManager.Spawn("your mom", out _);
         Assert.False(result);
         var entity = entityManager.GetEntity(0);
         Assert.NotNull(entity);

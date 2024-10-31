@@ -1,5 +1,6 @@
 ﻿using FurrySharp.Drawing;
 using FurrySharp.Entities.Base;
+using FurrySharp.Entities.Components;
 using FurrySharp.Input;
 using FurrySharp.Resources;
 using FurrySharp.Utilities;
@@ -12,31 +13,124 @@ namespace FurrySharp.Entities.Player;
 public class Player : Entity
 {
     public Texture2D PlayerSprite;
+    public VelMover Mover;
 
     public Player()
     {
         PlayerSprite = ResourceManager.GetTexture("ludwig_player");
         BoundingBox = EntityUtilities.BoundingBoxFromTexture(PlayerSprite);
-        HitBox = new Rectangle(11, 16,11,12);
+        HitBox = new Rectangle(11, 16, 11, 10);
+        Mover = new VelMover();
     }
 
     public override void Update()
     {
+        Frolic();
+        Mover.DoVel();
+        Mover.Move(this);
+    }
+
+    // Ground movement logic.
+    public void Frolic()
+    {
+        var walkSpeed = 96f;
+        var antiBoop = 6;
+        var walkAroundAssist = 0.95f;
+        
+        Mover.TargetSpeed = walkSpeed;
+        Mover.TargetDirection = Vector2.Zero;
+
+        Rectangle antiBooper = new Rectangle((int)Position.X + HitBox.X, (int)Position.Y + HitBox.Y, HitBox.Width, HitBox.Height);
+        antiBooper.Inflate(antiBoop, antiBoop); // owo inflation
+
+        // UP
         if (KeyInput.IsFunctionPressed(KeyFunctions.Up))
         {
-            MoveUp();
+            // Don't boop walls!
+            if ((WasTouching & Touching.UP) == 0)
+            {
+                Mover.TargetDirection.Y += -1f;
+            }
+            else if (KeyInput.IsFunctionPressed(KeyFunctions.Left) == false && KeyInput.IsFunctionPressed(KeyFunctions.Right) == false)
+            {
+                // Walk around them!
+                Touching tl = Map.GetCollisionData(antiBooper.Left, antiBooper.Top);
+                Touching tr = Map.GetCollisionData(antiBooper.Right, antiBooper.Top);
+                if ((tl & Touching.DOWN) == 0)
+                {
+                    Mover.TargetDirection.X += -walkAroundAssist;
+                }
+                else if ((tr & Touching.DOWN) == 0)
+                {
+                    Mover.TargetDirection.X += walkAroundAssist;
+                }
+            }
         }
+
+        // DOWN
         if (KeyInput.IsFunctionPressed(KeyFunctions.Down))
         {
-            MoveDown();
+            if ((WasTouching & Touching.DOWN) == 0)
+            {
+                Mover.TargetDirection.Y += 1f;
+            }
+            else if (KeyInput.IsFunctionPressed(KeyFunctions.Left) == false && KeyInput.IsFunctionPressed(KeyFunctions.Right) == false)
+            {
+                Touching bl = Map.GetCollisionData(antiBooper.Left, antiBooper.Bottom);
+                Touching br = Map.GetCollisionData(antiBooper.Right, antiBooper.Bottom);
+                if ((bl & Touching.UP) == 0)
+                {
+                    Mover.TargetDirection.X += -walkAroundAssist;
+                }
+                else if ((br & Touching.UP) == 0)
+                {
+                    Mover.TargetDirection.X += walkAroundAssist;
+                }
+            }
         }
+
+        // LEFT
         if (KeyInput.IsFunctionPressed(KeyFunctions.Left))
         {
-            MoveLeft();
+            if ((WasTouching & Touching.LEFT) == 0)
+            {
+                Mover.TargetDirection.X += -1f;
+            }
+            else if (KeyInput.IsFunctionPressed(KeyFunctions.Up) == false && KeyInput.IsFunctionPressed(KeyFunctions.Down) == false)
+            {
+                Touching tl = Map.GetCollisionData(antiBooper.Left, antiBooper.Top);
+                Touching bl = Map.GetCollisionData(antiBooper.Left, antiBooper.Bottom);
+                if ((tl & Touching.RIGHT) == 0)
+                {
+                    Mover.TargetDirection.Y += -walkAroundAssist;
+                }
+                else if ((bl & Touching.RIGHT) == 0)
+                {
+                    Mover.TargetDirection.Y += walkAroundAssist;
+                }
+            }
         }
+
+        // RIGHT
         if (KeyInput.IsFunctionPressed(KeyFunctions.Right))
         {
-            MoveRight();
+            if ((WasTouching & Touching.RIGHT) == 0)
+            {
+                Mover.TargetDirection.X += 1f;
+            }
+            else if (KeyInput.IsFunctionPressed(KeyFunctions.Up) == false && KeyInput.IsFunctionPressed(KeyFunctions.Down) == false)
+            {
+                Touching tr = Map.GetCollisionData(antiBooper.Right, antiBooper.Top);
+                Touching br = Map.GetCollisionData(antiBooper.Right, antiBooper.Bottom);
+                if ((tr & Touching.LEFT) == 0)
+                {
+                    Mover.TargetDirection.Y += -walkAroundAssist;
+                }
+                else if ((br & Touching.LEFT) == 0)
+                {
+                    Mover.TargetDirection.Y += walkAroundAssist;
+                }
+            }
         }
     }
 
@@ -44,25 +138,5 @@ public class Player : Entity
     {
         base.Draw();
         SpriteDrawer.DrawSprite(PlayerSprite, Position);
-    }
-
-    private void MoveUp()
-    {
-        Position.Y -= 1; // Adjust the value as needed
-    }
-
-    private void MoveDown()
-    {
-        Position.Y += 1; // Adjust the value as needed
-    }
-
-    private void MoveLeft()
-    {
-        Position.X -= 1; // Adjust the value as needed
-    }
-
-    private void MoveRight()
-    {
-        Position.X += 1; // Adjust the value as needed
     }
 }

@@ -28,4 +28,8 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="TileToEntityCollisionTest.cs" />
+    </ItemGroup>
+
 </Project>

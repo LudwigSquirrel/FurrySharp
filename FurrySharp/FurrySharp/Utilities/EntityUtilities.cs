@@ -11,15 +11,18 @@ public static class EntityUtilities
 {
     public static Rectangle BoundingBoxFromTexture(Texture2D texture)
     {
-        return new Rectangle(0, 0, texture.Width, texture.Height);
+        return new Rectangle(0, 0, texture?.Width ?? 1, texture?.Height ?? 1);
     }
 
-    public static bool SeparateEntityFromArea(Entity entity, Rectangle area, Touching areaAllowCollisions, float overlapBias)
+    public static bool SeparateEntityFromArea(Entity entity, FurRectangle area, Touching areaAllowCollisions, float overlapBias)
     {
-        return SeparateEntityFromAreaX(entity, area, areaAllowCollisions, overlapBias) || SeparateEntityFromAreaY(entity, area, areaAllowCollisions, overlapBias);
+
+        var b1 = SeparateEntityFromAreaX(entity, area, areaAllowCollisions, overlapBias);
+        var b2 = SeparateEntityFromAreaY(entity, area, areaAllowCollisions, overlapBias);
+        return b1 || b2;
     }
 
-    private static bool SeparateEntityFromAreaX(Entity entity, Rectangle area, Touching areaAllowCollisions, float overlapBias)
+    private static bool SeparateEntityFromAreaX(Entity entity, FurRectangle area, Touching areaAllowCollisions, float overlapBias)
     {
         if (entity.Immovable)
         {
@@ -84,7 +87,7 @@ public static class EntityUtilities
     }
     
     // Same thing for Y axis
-    private static bool SeparateEntityFromAreaY(Entity entity, Rectangle area, Touching areaAllowCollisions, float overlapBias)
+    private static bool SeparateEntityFromAreaY(Entity entity, FurRectangle area, Touching areaAllowCollisions, float overlapBias)
     {
         if (entity.Immovable)
         {

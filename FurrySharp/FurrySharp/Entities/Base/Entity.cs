@@ -1,5 +1,6 @@
 ﻿using System;
 using FurrySharp.Drawing;
+using FurrySharp.Maps;
 using FurrySharp.Registry;
 using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
@@ -20,6 +21,9 @@ public enum Touching
 public class Entity
 {
     public int InstanceId;
+
+    public EntityManager Manager; // the manager that bred me. Don't modify please :3
+    public MapInfo Map => Manager.Map;
     
     public Vector2 Position;
     public Vector2 LastPosition;

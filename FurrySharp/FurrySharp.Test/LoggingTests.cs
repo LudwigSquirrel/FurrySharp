@@ -7,6 +7,7 @@ public class LoggingTests
     [Test]
     public void DebugLoggerTest()
     {
+        Console.Write("Hello World?"); // this prints in NUnit's output.
         DebugLogger.AddDebug("Test");
         DebugLogger.AddCritical("Test");
         DebugLogger.AddError("Test");

@@ -121,7 +121,7 @@ public static class TerminalCommands
     {
         if (Program.FurryGame.CurrentState is SandboxState sandboxState)
         {
-            var result = sandboxState.EntityManager.Spawn(entityName);
+            var result = sandboxState.EntityManager.Spawn(entityName, out _);
             if (result)
             {
                 output.PrintInfo($"Spawned entity {entityName}.");
@@ -172,6 +172,20 @@ public static class TerminalCommands
             var entity = sandboxState.EntityManager.GetEntity(entityId);
             entity.Position = new Vector2(x, y);
             output.PrintInfo($"Moved entity {entityId} to {x}, {y}.");
+        }
+    }
+    
+    public static void respawn(Terminal output)
+    {
+        if (Program.FurryGame.CurrentState is SandboxState sandboxState)
+        {
+            var entity = sandboxState.Player;
+            var oldPosition = entity.Position;
+            sandboxState.EntityManager.RemoveEntity(entity);
+            sandboxState.EntityManager.Spawn(out entity);
+            sandboxState.Player = entity;
+            entity.Position = oldPosition;
+            output.PrintInfo("Respawned player.");
         }
     }
 }

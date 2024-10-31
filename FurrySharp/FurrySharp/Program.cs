@@ -1,22 +1,35 @@
 ﻿using System;
-using System.Threading;
 using FurrySharp.Logging;
 using FurrySharp.Resources;
-using Microsoft.Xna.Framework;
+using FurrySharp.Utilities;
 
 namespace FurrySharp.Multiplatform;
 
 public static class Program
 {
-    public static readonly FurryGame FurryGame = new();
+    public static FurryGame FurryGame;
 
     [STAThread]
     static void Main()
     {
+        RunNormally();
+    }
+    
+    public static bool RunWithTest(GameLoopTestBundle test)
+    {
+        FurryGame = new FurryGame();
+        FurryGame.Test = test;
+        RunGame();
+        return FurryGame.Test.Passed;
+    }
+
+    public static void RunNormally()
+    {
+        FurryGame = new FurryGame();
         RunGame();
     }
 
-    public static void RunGame()
+    private static void RunGame()
     {
         try
         {

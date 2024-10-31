@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -10,6 +11,7 @@ using FurrySharp.Resources;
 using FurrySharp.States;
 using FurrySharp.UI;
 using FurrySharp.UI.Font;
+using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -25,6 +27,11 @@ public class FurryGame : Game, IStateSetter
 
     public UILabel FpsLabel { get; private set; }
     public Terminal Terminal { get; private set; }
+
+
+#if DEBUG
+    public GameLoopTestBundle Test;
+#endif
 
     public FurryGame()
     {
@@ -68,7 +75,8 @@ public class FurryGame : Game, IStateSetter
 
     protected override void LoadContent()
     {
-        ResourceManager.LoadResources(Content);
+        ResourceManager.LoadContentManagerResources(Content);
+        ResourceManager.LoadOtherResources();
     }
 
     protected override void UnloadContent()
@@ -118,8 +126,6 @@ public class FurryGame : Game, IStateSetter
 
         CurrentState.UpdateState();
 
-        // TODO: Add your update logic here
-
         if (GlobalState.ResolutionDirty)
         {
             InitGraphics();
@@ -128,6 +134,17 @@ public class FurryGame : Game, IStateSetter
 
         GameTimes.UpdateFPS(gameTime);
         base.Update(gameTime);
+
+#if DEBUG
+        if (Test != null)
+        {
+            Test.DoTest();
+            if (Test.Done)
+            {
+                Exit();
+            }
+        }
+#endif
     }
 
     protected override void Draw(GameTime gameTime)

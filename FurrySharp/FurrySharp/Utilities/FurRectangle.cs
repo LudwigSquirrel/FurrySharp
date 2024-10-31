@@ -118,8 +118,14 @@ public struct FurRectangle : IEquatable<FurRectangle>
         this.Height += (int)verticalAmount * 2;
     }
 
-    public bool Intersects(FurRectangle value) => value.Left < this.Right && this.Left < value.Right && value.Top < this.Bottom && this.Top < value.Bottom;
-    public bool Intersects(Rectangle value) => value.Left < this.Right && this.Left < value.Right && value.Top < this.Bottom && this.Top < value.Bottom;
+    public bool Intersects(FurRectangle value, float epsilon = 0.01f)
+    {
+        var b1 = value.Left + epsilon < this.Right - epsilon;
+        var b2 = this.Left + epsilon < value.Right - epsilon;
+        var b3 = value.Top + epsilon < this.Bottom - epsilon;
+        var b4 = this.Top + epsilon < value.Bottom - epsilon;
+        return b1 && b2 && b3 && b4;
+    }
 
     public void Intersects(ref FurRectangle value, out bool result) => result = value.Left < this.Right && this.Left < value.Right && value.Top < this.Bottom && this.Top < value.Bottom;
 

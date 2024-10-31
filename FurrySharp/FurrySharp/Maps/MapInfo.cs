@@ -146,7 +146,7 @@ public class MapInfo
 
     public void Collide(Entity entity)
     {
-        Point tl = ToMapLoc(new((int)entity.Position.X + entity.HitBox.X, (int)entity.Position.Y + entity.HitBox.Y));
+        Point tl = ToMapLoc(new((int)(entity.Position.X + entity.HitBox.X), (int)(entity.Position.Y + entity.HitBox.Y)));
         Point br = ToMapLoc(new((int)MathF.Ceiling(entity.Position.X + entity.HitBox.Right), (int)MathF.Ceiling(entity.Position.Y + entity.HitBox.Bottom)));
 
         for (int y = tl.Y; y <= br.Y; y++)
@@ -161,17 +161,25 @@ public class MapInfo
                 }
 
                 TileInfo.TileData data = TileInfo.GetData(tile);
-                Rectangle tileArea = new Rectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                FurRectangle tileArea = new FurRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 CollideTile(entity, data, tileArea);
             }
         }
     }
 
-    public static void CollideTile(Entity entity, TileInfo.TileData tile, Rectangle tileArea)
+    public static void CollideTile(Entity entity, TileInfo.TileData tile, FurRectangle tileArea)
     {
         if (tile.CollisionDirection != Touching.NONE)
         {
             EntityUtilities.SeparateEntityFromArea(entity, tileArea, tile.CollisionDirection, 16f);
         }
+    }
+    
+    public Touching GetCollisionData(float x, float y)
+    {
+        Point loc = ToMapLoc(new((int)x, (int)y));
+        int tile = GetTile((int)MapLayer.BG, loc.X, loc.Y);
+        TileInfo.TileData data = TileInfo.GetData(tile);
+        return data.CollisionDirection;
     }
 }
