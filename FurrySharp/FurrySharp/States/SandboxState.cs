@@ -25,13 +25,21 @@ public class SandboxState : State
         Map = MapInfo.FromResources("debug");
         EntityManager.Map = Map;
         AudioManager.PlaySong(Map.Settings.Music);
+        GameTimes.TimeScale = 1f;
     }
 
     public override void UpdateState()
     {
         EntityManager.UpdateEntities();
         EntityManager.DoCollisions();
+        // It seems that controlling the camera works best after this point. If done before update/collisions, then the
+        // entity position the camera was given will be out of sync most frames. It's also futile to move the camera in
+        // the DrawState() method, because the camera's transform was already given to the spritebatch - any changes in
+        // position take place next frame, and also, Draw() and Update() are not in sync anyway, so there's no guarantee
+        // you get the position at a consistent point in the game loop. I think it is safest to do camera movement
+        // "post" update.
         EntityManager.PostUpdateEntities();
+        SpriteDrawer.Camera.CenterOn((Player.Position.ToPoint() + Player.HitBox.Center).ToVector2());
     }
     
     public override void DrawState()

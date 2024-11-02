@@ -27,7 +27,7 @@ public class Player : Entity
     {
         Frolic();
         Mover.DoVel();
-        Mover.Move(this);
+        Mover.WholeyMove(this);
     }
 
     // Ground movement logic.

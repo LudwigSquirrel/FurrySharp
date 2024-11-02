@@ -51,14 +51,15 @@ public class Camera
         return MathUtilities.MoveTo(ref actualPos.X, target.X + GAME_WIDTH_IN_PIXELS / 2, speed) && MathUtilities.MoveTo(ref actualPos.Y, target.Y + GAME_HEIGHT_IN_PIXELS / 2, speed);
     }
 
-    public void GoTo(float x, float y)
-    {
-        GoTo(new Vector2(x, y));
-    }
-
     public void GoTo(Vector2 target)
     {
         target += new Vector2(GAME_WIDTH_IN_PIXELS, GAME_HEIGHT_IN_PIXELS) / 2;
+        actualPos = new Vector3(target, actualPos.Z);
+        Recalc();
+    }
+
+    public void CenterOn(Vector2 target)
+    {
         actualPos = new Vector3(target, actualPos.Z);
         Recalc();
     }

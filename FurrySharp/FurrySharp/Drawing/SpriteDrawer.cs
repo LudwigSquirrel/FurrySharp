@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using FurrySharp.Multiplatform;
 using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using FurrySharp.Registry;
+using FurrySharp.States;
 using Microsoft.Xna.Framework.Content;
 using static FurrySharp.Registry.GameConstants;
 
@@ -18,6 +20,7 @@ public static class SpriteDrawer
     public static Color BackColor;
     public static Texture2D SolidTex;
     public static SpriteBatch SpriteBatch;
+    public static Camera Camera = new Camera();
 
     public static void Initialize(GraphicsDevice device)
     {
@@ -42,7 +45,8 @@ public static class SpriteDrawer
             sortMode: SpriteSortMode.BackToFront,
             blendState: BlendState.AlphaBlend,
             samplerState: SamplerState.PointWrap, // best for pixel art
-            effect: null);
+            effect: null,
+            transformMatrix: Camera.Transform);
     }
 
     public static void EndDraw()

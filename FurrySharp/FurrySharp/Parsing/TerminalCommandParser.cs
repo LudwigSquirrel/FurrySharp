@@ -188,4 +188,10 @@ public static class TerminalCommands
             output.PrintInfo("Respawned player.");
         }
     }
+
+    public static void timescale(Terminal output, float scale)
+    {
+        GameTimes.TimeScale = scale;
+        output.PrintInfo($"Set time scale to: {scale}");
+    }
 }
