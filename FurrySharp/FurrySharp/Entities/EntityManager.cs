@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using FurrySharp.Drawing;
 using FurrySharp.Entities.Base;
 using FurrySharp.Logging;
 using FurrySharp.Maps;
 using FurrySharp.Registry;
+using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Entities;
 
@@ -25,7 +27,7 @@ public class EntityManager
             InstanceId = idCounter++,
             Manager = this,
         };
-        onEntities.Add(entity);
+        onEntities.Add(entity); // todo: add to offEntities if off screen
         collisionGroups.Register(entity);
     }
 
@@ -62,8 +64,6 @@ public class EntityManager
         {
             entity.Update();
         }
-        
-        // todo: implement a way to move entities between onEntities and offEntities.
     }
 
     public void PostUpdateEntities()
@@ -76,6 +76,33 @@ public class EntityManager
         foreach (Entity entity in offEntities)
         {
             entity.PostUpdate();
+        }
+    }
+
+    public void DoOnScreen()
+    {
+        for (var i = 0; i < onEntities.Count; i++)
+        {
+            Entity e = onEntities[i];
+            Rectangle bb = e.BoundingBox;
+            bb.Offset(e.Position);
+            if (SpriteDrawer.Camera.Bounds.Intersects(bb) == false)
+            {
+                onEntities.RemoveAt(i);
+                offEntities.Add(e);
+            }
+        }
+        
+        for (var i = 0; i < offEntities.Count; i++)
+        {
+            Entity e = offEntities[i];
+            Rectangle bb = e.BoundingBox;
+            bb.Offset(e.Position);
+            if (SpriteDrawer.Camera.Bounds.Intersects(bb))
+            {
+                offEntities.RemoveAt(i);
+                onEntities.Add(e);
+            }
         }
     }
 

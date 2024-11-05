@@ -21,7 +21,7 @@ public class SandboxState : State
     {
         base.Create();
         EntityManager.Spawn(out Player);
-        Player.Position = new Vector2(TILE_SIZE, TILE_SIZE); //todo: implement a better way to get access to entities.
+        Player.Position = new Vector2(TILE_SIZE, TILE_SIZE);
         Map = MapInfo.FromResources("debug");
         EntityManager.Map = Map;
         AudioManager.PlaySong(Map.Settings.Music);
@@ -38,13 +38,14 @@ public class SandboxState : State
         // position take place next frame, and also, Draw() and Update() are not in sync anyway, so there's no guarantee
         // you get the position at a consistent point in the game loop. I think it is safest to do camera movement
         // "post" update.
-        EntityManager.PostUpdateEntities();
         SpriteDrawer.Camera.CenterOn((Player.Position.ToPoint() + Player.HitBox.Center).ToVector2());
+        EntityManager.PostUpdateEntities();
+        EntityManager.DoOnScreen();
     }
     
     public override void DrawState()
     {
         EntityManager.DrawEntities();
-        Map.DrawLayer(new Rectangle(0,0, GAME_WIDTH_IN_PIXELS, GAME_HEIGHT_IN_PIXELS), (int)MapLayer.BG, DrawOrder.BG, false);
+        Map.DrawLayer(SpriteDrawer.Camera.Bounds, (int)MapLayer.BG, DrawOrder.BG, false);
     }
 }
