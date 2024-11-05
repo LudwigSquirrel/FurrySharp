@@ -51,9 +51,9 @@ public static class Program
     private static int RunUploadAndReturnExitCode(object opts)
     {
         UploadOptions upload = (UploadOptions)opts;
-        VerboseMode = upload.Verbose;
+        VerboseMode = upload.Verbose || upload.DryRun;
         DryRunMode = upload.DryRun;
-        VerboseOutput($"Attempting to upload some ass!");
+        VerboseOutput("Attempting to upload some ass!");
 
         // Find file paths that match the search patterns under the content folder.
         if (Config.ContentPath == null)

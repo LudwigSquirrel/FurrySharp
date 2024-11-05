@@ -2,7 +2,7 @@
 
 namespace FurrySharp.AssStash;
 
-[Verb("config", HelpText = "Configs this application.")]
+[Verb("config", HelpText = "Configs this application. Configuration is stored in './options.json'.")]
 public class ConfigOptions
 {
     [Option('c', "contentPath", Default = null, HelpText = "Sets the content path.")]
