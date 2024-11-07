@@ -3,6 +3,7 @@ using FurrySharp.Drawing;
 using FurrySharp.Entities;
 using FurrySharp.Entities.Player;
 using FurrySharp.Maps;
+using FurrySharp.UI;
 using Microsoft.Xna.Framework;
 
 using static FurrySharp.Registry.GameConstants;
@@ -16,6 +17,8 @@ public class SandboxState : State
     public MapInfo Map;
 
     public Player Player;
+
+    public FingyCursor FingyCursor = new();
 
     public override void Create()
     {
@@ -47,5 +50,10 @@ public class SandboxState : State
     {
         EntityManager.DrawEntities();
         Map.DrawLayer(SpriteDrawer.Camera.Bounds, (int)MapLayer.BG, DrawOrder.BG, false);
+    }
+
+    public override void DrawUI()
+    {
+        FingyCursor.DrawFingy();
     }
 }

@@ -42,7 +42,7 @@ public class FurryGame : Game, IStateSetter
 
         CurrentState = null;
 
-        IsMouseVisible = true;
+        IsMouseVisible = false;
 
         if (!Directory.Exists(SavePath))
         {
@@ -92,6 +92,7 @@ public class FurryGame : Game, IStateSetter
 
         GameTimes.UpdateTimes(gameTime);
         KeyInput.UpdateInputs();
+        MouseInput.UpdatePositions();
 
         if (KeyInput.JustPressedKey(Keys.F12))
         {
@@ -150,6 +151,10 @@ public class FurryGame : Game, IStateSetter
     {
         SpriteDrawer.BeginDraw();
         CurrentState.DrawState();
+        SpriteDrawer.EndDraw();
+
+        SpriteDrawer.BeginGUIDraw();
+        CurrentState.DrawUI();
         if (GlobalState.ShowFPS)
         {
             FpsLabel.Text = $"FPS:{GameTimes.FPS}";
@@ -161,7 +166,8 @@ public class FurryGame : Game, IStateSetter
             Terminal.Draw();
         }
 
-        SpriteDrawer.EndDraw();
+        SpriteDrawer.EndGUIDraw();
+        SpriteDrawer.Render();
     }
 
     public void CreateAndSetState<T>() where T : State, new()
@@ -180,7 +186,7 @@ public class FurryGame : Game, IStateSetter
     {
         graphics.GraphicsProfile = GraphicsProfile.HiDef;
         graphics.IsFullScreen = false;
-        
+
         int displayWidth;
         int displayHeight;
         int scale;

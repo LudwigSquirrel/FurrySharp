@@ -137,6 +137,6 @@ public class Player : Entity
     public override void Draw()
     {
         base.Draw();
-        SpriteDrawer.DrawSprite(PlayerSprite, Position);
+        SpriteDrawer.DrawSprite(PlayerSprite, Position, z: DrawingUtilities.GetDrawingZ(DrawOrder.Player));
     }
 }

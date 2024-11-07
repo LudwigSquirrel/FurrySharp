@@ -14,9 +14,12 @@ public static class SpriteDrawer
 {
     private static GraphicsDevice graphicsDevice;
 
-    private static Rectangle renderDestination;
+    private static RenderTarget2D gameTarget;
+    private static RenderTarget2D uiTarget;
+    
     private static RenderTarget2D renderTargetNative; // for drawing to the screen, independent of the window size
 
+    public static Rectangle RenderDestination;
     public static Color BackColor;
     public static Texture2D SolidTex;
     public static SpriteBatch SpriteBatch;
@@ -29,6 +32,8 @@ public static class SpriteDrawer
         graphicsDevice = device;
         SpriteBatch = new(graphicsDevice);
 
+        gameTarget = new(graphicsDevice, GAME_WIDTH_IN_PIXELS, GAME_HEIGHT_IN_PIXELS);
+        uiTarget = new(graphicsDevice, GAME_WIDTH_IN_PIXELS, GAME_HEIGHT_IN_PIXELS);
         renderTargetNative = new(graphicsDevice, GAME_WIDTH_IN_PIXELS, GAME_HEIGHT_IN_PIXELS);
 
         SolidTex = new(graphicsDevice, 2, 2);
@@ -39,7 +44,7 @@ public static class SpriteDrawer
     {
         graphicsDevice.Clear(BackColor);
 
-        graphicsDevice.SetRenderTarget(renderTargetNative);
+        graphicsDevice.SetRenderTarget(gameTarget);
 
         SpriteBatch.Begin(
             sortMode: SpriteSortMode.BackToFront,
@@ -52,15 +57,38 @@ public static class SpriteDrawer
     public static void EndDraw()
     {
         SpriteBatch.End();
+    }
 
-        graphicsDevice.SetRenderTarget(null);
-
+    public static void BeginGUIDraw()
+    {
+        graphicsDevice.SetRenderTarget(uiTarget);
+        graphicsDevice.Clear(BackColor);
+        
+        SpriteBatch.Begin();
+        SpriteBatch.Draw(gameTarget, new Rectangle(0,0, GAME_WIDTH_IN_PIXELS, GAME_HEIGHT_IN_PIXELS), Color.White);
+        SpriteBatch.End();
+        
         SpriteBatch.Begin(
             sortMode: SpriteSortMode.BackToFront,
             blendState: BlendState.AlphaBlend,
             samplerState: SamplerState.PointWrap, // best for pixel art
             effect: null);
-        SpriteBatch.Draw(renderTargetNative, renderDestination, Color.White);
+    }
+
+    public static void EndGUIDraw()
+    {
+        SpriteBatch.End();
+    }
+
+    public static void Render()
+    {
+        graphicsDevice.SetRenderTarget(null);
+        
+        SpriteBatch.Begin(
+            sortMode: SpriteSortMode.Texture,
+            blendState: BlendState.AlphaBlend,
+            samplerState: SamplerState.PointWrap);
+        SpriteBatch.Draw(uiTarget, RenderDestination, Color.White);
         SpriteBatch.End();
     }
 
@@ -96,10 +124,10 @@ public static class SpriteDrawer
 
     public static void UpdateRenderDestination(int displayWidth, int displayHeight, int scale)
     {
-        renderDestination.Width = GAME_WIDTH_IN_PIXELS * scale;
-        renderDestination.Height = GAME_HEIGHT_IN_PIXELS * scale;
+        RenderDestination.Width = GAME_WIDTH_IN_PIXELS * scale;
+        RenderDestination.Height = GAME_HEIGHT_IN_PIXELS * scale;
 
-        renderDestination.X = (displayWidth - renderDestination.Width) / 2;
-        renderDestination.Y = (displayHeight - renderDestination.Height) / 2;
+        RenderDestination.X = (displayWidth - RenderDestination.Width) / 2;
+        RenderDestination.Y = (displayHeight - RenderDestination.Height) / 2;
     }
 }

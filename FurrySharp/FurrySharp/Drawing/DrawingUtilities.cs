@@ -3,8 +3,9 @@ namespace FurrySharp.Drawing;
 public enum DrawOrder
 {
     BG,             // The background tilemap layer.
-    Front,          //
+    Player,         // 
     Text,           // Text in dialogue.
+    Fingy,          // The pointer used for UI interaction.
     BlackOverlay    // Black fadeout transition.
 }
 
