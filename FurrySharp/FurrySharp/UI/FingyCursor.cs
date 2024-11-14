@@ -17,7 +17,7 @@ public class FingyCursor
     public void DrawFingy()
     {
         Rectangle source = FingySheet.GetRect(0);
-        var screenPosition = MouseInput.ScreenPosition;
+        var screenPosition = GameInput.PointerScreenPosition;
         Rectangle dest = new Rectangle(screenPosition, new Point(16));
         var drawingZ = DrawingUtilities.GetDrawingZ(DrawOrder.Fingy);
         SpriteDrawer.DrawSprite(FingySheet.Tex, dest, source, z: drawingZ);

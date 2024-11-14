@@ -18,13 +18,21 @@ public enum Touching
     ANY = LEFT | RIGHT | UP | DOWN
 }
 
+public enum Facing
+{
+    N,
+    S,
+    E,
+    W,
+}
+
 public class Entity
 {
     public int InstanceId;
 
     public EntityManager Manager; // the manager that bred me. Don't modify please :3
     public MapInfo Map => Manager.Map;
-    
+
     public Vector2 Position;
     public Vector2 LastPosition;
 
@@ -34,6 +42,8 @@ public class Entity
     public Touching Touching = Touching.NONE;
     public Touching WasTouching = Touching.NONE;
     public Touching AllowCollisions = Touching.ANY;
+
+    public Facing Facing = Facing.S;
 
     public bool Immovable;
 
@@ -45,7 +55,7 @@ public class Entity
     public virtual void PostUpdate()
     {
         LastPosition = Position;
-        
+
         WasTouching = Touching;
         Touching = Touching.NONE;
     }

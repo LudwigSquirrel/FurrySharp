@@ -91,15 +91,14 @@ public class FurryGame : Game, IStateSetter
             Exit();
 
         GameTimes.UpdateTimes(gameTime);
-        KeyInput.UpdateInputs();
-        MouseInput.UpdatePositions();
+        GameInput.UpdateInputs();
 
-        if (KeyInput.JustPressedKey(Keys.F12))
+        if (GameInput.JustPressedKey(Keys.F12))
         {
             GlobalState.ShowFPS = !GlobalState.ShowFPS;
         }
 
-        if (KeyInput.JustPressedKey(Keys.OemTilde))
+        if (GameInput.JustPressedKey(Keys.OemTilde))
         {
             GlobalState.ShowTerminal = !GlobalState.ShowTerminal;
             if (GlobalState.ShowTerminal)
@@ -112,7 +111,7 @@ public class FurryGame : Game, IStateSetter
             }
         }
 
-        if (KeyInput.JustPressedKey(Keys.Enter) && KeyInput.IsKeyPressed(Keys.LeftAlt))
+        if (GameInput.JustPressedKey(Keys.Enter) && GameInput.IsKeyPressed(Keys.LeftAlt))
         {
             if (GlobalState.GetResolution() == Resolution.Windowed)
             {

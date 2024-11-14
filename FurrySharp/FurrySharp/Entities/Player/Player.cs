@@ -2,6 +2,7 @@
 using FurrySharp.Entities.Base;
 using FurrySharp.Entities.Components;
 using FurrySharp.Input;
+using FurrySharp.Logging;
 using FurrySharp.Resources;
 using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
@@ -26,6 +27,7 @@ public class Player : Entity
     public override void Update()
     {
         Frolic();
+        SwordSwipe();
         Mover.DoVel();
         Mover.WholeyMove(this);
     }
@@ -44,14 +46,14 @@ public class Player : Entity
         antiBooper.Inflate(antiBoop, antiBoop); // owo inflation
 
         // UP
-        if (KeyInput.IsFunctionPressed(KeyFunctions.Up))
+        if (GameInput.IsFunctionPressed(KeyFunctions.Up))
         {
             // Don't boop walls!
             if ((WasTouching & Touching.UP) == 0)
             {
                 Mover.TargetDirection.Y += -1f;
             }
-            else if (KeyInput.IsFunctionPressed(KeyFunctions.Left) == false && KeyInput.IsFunctionPressed(KeyFunctions.Right) == false)
+            else if (GameInput.IsFunctionPressed(KeyFunctions.Left) == false && GameInput.IsFunctionPressed(KeyFunctions.Right) == false)
             {
                 // Walk around them!
                 Touching tl = Map.GetCollisionData(antiBooper.Left, antiBooper.Top);
@@ -68,13 +70,13 @@ public class Player : Entity
         }
 
         // DOWN
-        if (KeyInput.IsFunctionPressed(KeyFunctions.Down))
+        if (GameInput.IsFunctionPressed(KeyFunctions.Down))
         {
             if ((WasTouching & Touching.DOWN) == 0)
             {
                 Mover.TargetDirection.Y += 1f;
             }
-            else if (KeyInput.IsFunctionPressed(KeyFunctions.Left) == false && KeyInput.IsFunctionPressed(KeyFunctions.Right) == false)
+            else if (GameInput.IsFunctionPressed(KeyFunctions.Left) == false && GameInput.IsFunctionPressed(KeyFunctions.Right) == false)
             {
                 Touching bl = Map.GetCollisionData(antiBooper.Left, antiBooper.Bottom);
                 Touching br = Map.GetCollisionData(antiBooper.Right, antiBooper.Bottom);
@@ -90,13 +92,13 @@ public class Player : Entity
         }
 
         // LEFT
-        if (KeyInput.IsFunctionPressed(KeyFunctions.Left))
+        if (GameInput.IsFunctionPressed(KeyFunctions.Left))
         {
             if ((WasTouching & Touching.LEFT) == 0)
             {
                 Mover.TargetDirection.X += -1f;
             }
-            else if (KeyInput.IsFunctionPressed(KeyFunctions.Up) == false && KeyInput.IsFunctionPressed(KeyFunctions.Down) == false)
+            else if (GameInput.IsFunctionPressed(KeyFunctions.Up) == false && GameInput.IsFunctionPressed(KeyFunctions.Down) == false)
             {
                 Touching tl = Map.GetCollisionData(antiBooper.Left, antiBooper.Top);
                 Touching bl = Map.GetCollisionData(antiBooper.Left, antiBooper.Bottom);
@@ -112,13 +114,13 @@ public class Player : Entity
         }
 
         // RIGHT
-        if (KeyInput.IsFunctionPressed(KeyFunctions.Right))
+        if (GameInput.IsFunctionPressed(KeyFunctions.Right))
         {
             if ((WasTouching & Touching.RIGHT) == 0)
             {
                 Mover.TargetDirection.X += 1f;
             }
-            else if (KeyInput.IsFunctionPressed(KeyFunctions.Up) == false && KeyInput.IsFunctionPressed(KeyFunctions.Down) == false)
+            else if (GameInput.IsFunctionPressed(KeyFunctions.Up) == false && GameInput.IsFunctionPressed(KeyFunctions.Down) == false)
             {
                 Touching tr = Map.GetCollisionData(antiBooper.Right, antiBooper.Top);
                 Touching br = Map.GetCollisionData(antiBooper.Right, antiBooper.Bottom);
@@ -134,6 +136,13 @@ public class Player : Entity
         }
     }
 
+    public void SwordSwipe()
+    {
+        if (GameInput.JustPressedFunction(KeyFunctions.Attack1))
+        {
+            DebugLogger.AddDebug("Attack 1 pressed");
+        }
+    }
     public override void Draw()
     {
         base.Draw();
