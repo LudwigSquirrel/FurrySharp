@@ -1,9 +1,14 @@
-﻿using FurrySharp.Audio;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using FurrySharp.Audio;
 using FurrySharp.Drawing;
 using FurrySharp.Entities;
 using FurrySharp.Entities.Player;
 using FurrySharp.Maps;
+using FurrySharp.Resources;
 using FurrySharp.UI;
+using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
 
 using static FurrySharp.Registry.GameConstants;
@@ -20,19 +25,35 @@ public class SandboxState : State
 
     public FingyCursor FingyCursor = new();
 
+    public Trail Trail = new();
+
     public override void Create()
     {
         base.Create();
         EntityManager.Spawn(out Player);
         Player.Position = new Vector2(TILE_SIZE, TILE_SIZE);
+        EntityManager.Spawn(out Player friendo);
+        friendo.Position = new Vector2(TILE_SIZE + TILE_SIZE, TILE_SIZE);
         Map = MapInfo.FromResources("debug");
         EntityManager.Map = Map;
         AudioManager.PlaySong(Map.Settings.Music);
         GameTimes.TimeScale = 1f;
+
+        Spritesheet spritesheet = new Spritesheet(ResourceManager.GetTexture("ludwig_player"), 32, 32);
+        Trail.AddDefaultUnits(20);
+        Trail.Spritesheet = spritesheet;
     }
 
     public override void UpdateState()
     {
+        Vector2[] circle = MathUtilities.PlotCircle(new Vector2(TILE_SIZE * 5, TILE_SIZE * 5), 64, Trail.Units.Count, GameTimes.TotalTime);
+        for (var i = 0; i < Trail.Units.Count; i++)
+        {
+            Trail.Units[i].Position = circle[i];
+            Trail.Units[i].Scale = MathF.Abs(MathF.Sin(GameTimes.TotalTime * 2 + i * 0.1f));
+            Trail.Units[i].Rotation = GameTimes.TotalTime * 0.1f * i;
+        }
+        
         EntityManager.UpdateEntities();
         EntityManager.DoCollisions();
         // It seems that controlling the camera works best after this point. If done before update/collisions, then the
@@ -49,6 +70,7 @@ public class SandboxState : State
     public override void DrawState()
     {
         EntityManager.DrawEntities();
+        Trail.DrawTrail(Map);
         Map.DrawLayer(SpriteDrawer.Camera.Bounds, (int)MapLayer.BG, DrawOrder.BG, false);
     }
 

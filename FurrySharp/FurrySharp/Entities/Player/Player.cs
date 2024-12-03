@@ -38,7 +38,7 @@ public class Player : Entity
         var walkSpeed = 96f;
         var antiBoop = 6;
         var walkAroundAssist = 0.95f;
-        
+
         Mover.TargetSpeed = walkSpeed;
         Mover.TargetDirection = Vector2.Zero;
 
@@ -143,9 +143,10 @@ public class Player : Entity
             DebugLogger.AddDebug("Attack 1 pressed");
         }
     }
+
     public override void Draw()
     {
         base.Draw();
-        SpriteDrawer.DrawSprite(PlayerSprite, Position, z: DrawingUtilities.GetDrawingZ(DrawOrder.Player));
+        SpriteDrawer.DrawSprite(PlayerSprite, Position, z: EntityUtilities.GetEntityZ(this));
     }
 }

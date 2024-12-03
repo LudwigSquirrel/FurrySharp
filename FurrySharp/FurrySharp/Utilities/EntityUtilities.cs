@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using FurrySharp.Drawing;
 using FurrySharp.Entities.Base;
+using FurrySharp.Maps;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -86,7 +88,6 @@ public static class EntityUtilities
         return false;
     }
     
-    // Same thing for Y axis
     private static bool SeparateEntityFromAreaY(Entity entity, FurRectangle area, Touching areaAllowCollisions, float overlapBias)
     {
         if (entity.Immovable)
@@ -146,5 +147,10 @@ public static class EntityUtilities
         }
         
         return false;
+    }
+
+    public static float GetEntityZ(Entity entity)
+    {
+        return DrawingUtilities.GetDrawingZ(DrawOrder.Entities, entity.Position.Y + entity.HitBox.Top, entity.Map.HeightInPixels);
     }
 }
