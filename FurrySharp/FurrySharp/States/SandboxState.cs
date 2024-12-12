@@ -27,6 +27,8 @@ public class SandboxState : State
 
     public Trail Trail = new();
 
+    public Spline Spline = new();
+
     public override void Create()
     {
         base.Create();
@@ -42,14 +44,26 @@ public class SandboxState : State
         Spritesheet spritesheet = new Spritesheet(ResourceManager.GetTexture("ludwig_player"), 32, 32);
         Trail.AddDefaultUnits(20);
         Trail.Spritesheet = spritesheet;
+        
+        Spline.Segments.Add(new BezierCurve()
+        {
+            A = new Vector2(TILE_SIZE * 5, TILE_SIZE * 5),
+            B = new Vector2(TILE_SIZE * 5, 0),
+            C = new Vector2(TILE_SIZE * 10, 0),
+            D = new Vector2(TILE_SIZE * 10, TILE_SIZE * 5),
+        });
+        Spline.UpdateLengthAndLookupTable();
     }
 
     public override void UpdateState()
     {
-        Vector2[] circle = MathUtilities.PlotCircle(new Vector2(TILE_SIZE * 5, TILE_SIZE * 5), 64, Trail.Units.Count, GameTimes.TotalTime);
+        //Vector2[] circle = MathUtilities.PlotCircle(new Vector2(TILE_SIZE * 5, TILE_SIZE * 5), 64, Trail.Units.Count, GameTimes.TotalTime);
+        Spline.Segments[0].A = Player.Position;
+        Spline.UpdateLengthAndLookupTable();
+        Vector2[] points = Spline.GetEvenlySpacedPoints(Trail.Units.Count);
         for (var i = 0; i < Trail.Units.Count; i++)
         {
-            Trail.Units[i].Position = circle[i];
+            Trail.Units[i].Position = points[i];
             Trail.Units[i].Scale = MathF.Abs(MathF.Sin(GameTimes.TotalTime * 2 + i * 0.1f));
             Trail.Units[i].Rotation = GameTimes.TotalTime * 0.1f * i;
         }

@@ -13,13 +13,16 @@ namespace FurrySharp.Entities.Player;
 [Collision(MapCollider = true)]
 public class Player : Entity
 {
-    public Texture2D PlayerSprite;
+    Spritesheet PlayerSpriteSheet;
     public VelMover Mover;
+    public Trail SwordSwipeTrail;
 
     public Player()
     {
-        PlayerSprite = ResourceManager.GetTexture("ludwig_player");
-        BoundingBox = EntityUtilities.BoundingBoxFromTexture(PlayerSprite);
+        PlayerSpriteSheet = new Spritesheet(ResourceManager.GetTexture("ludwig_player"), 32, 32);
+        SwordSwipeTrail = new Trail();
+        SwordSwipeTrail.AddDefaultUnits(10);
+        BoundingBox = EntityUtilities.BoundingBoxFromSpritesheet(PlayerSpriteSheet);
         HitBox = new Rectangle(11, 16, 11, 10);
         Mover = new VelMover();
     }
@@ -140,13 +143,13 @@ public class Player : Entity
     {
         if (GameInput.JustPressedFunction(KeyFunctions.Attack1))
         {
-            DebugLogger.AddDebug("Attack 1 pressed");
+            SwordSwipeTrail.Spritesheet = PlayerSpriteSheet;
         }
     }
 
     public override void Draw()
     {
         base.Draw();
-        SpriteDrawer.DrawSprite(PlayerSprite, Position, z: EntityUtilities.GetEntityZ(this));
+        SpriteDrawer.DrawSprite(PlayerSpriteSheet.Tex, Position, z: EntityUtilities.GetEntityZ(this));
     }
 }

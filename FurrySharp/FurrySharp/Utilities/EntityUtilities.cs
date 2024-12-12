@@ -15,6 +15,11 @@ public static class EntityUtilities
     {
         return new Rectangle(0, 0, texture?.Width ?? 1, texture?.Height ?? 1);
     }
+    
+    public static Rectangle BoundingBoxFromSpritesheet(Spritesheet spritesheet)
+    {
+        return new Rectangle(0, 0, spritesheet?.Width ?? 1, spritesheet?.Height ?? 1);
+    }
 
     public static bool SeparateEntityFromArea(Entity entity, FurRectangle area, Touching areaAllowCollisions, float overlapBias)
     {

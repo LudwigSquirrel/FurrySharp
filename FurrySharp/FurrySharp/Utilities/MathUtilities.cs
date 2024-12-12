@@ -20,17 +20,24 @@ public class MathUtilities
         return v == target;
     }
 
-    public static Vector2[] PlotCircle(Vector2 center, float radius, int numPoints, float offset = 0)
+    public static Vector2[] PlotCircle(Vector2 center, float radius, int numPoints, float degreeOffset = 0)
     {
         Vector2[] ret = new Vector2[numPoints];
+        float step = MathHelper.TwoPi / numPoints;
+        float offset = MathHelper.ToRadians(degreeOffset);
         for (int i = 0; i < numPoints; i++)
         {
-            float angle = offset + (MathHelper.TwoPi * i / numPoints);
+            float angle = offset + (step * i);
             float x = center.X + radius * (float)Math.Cos(angle);
             float y = center.Y + radius * (float)Math.Sin(angle);
             ret[i] = new Vector2(x, y);
         }
 
         return ret;
+    }
+    
+    public static float Remap(float value, float from1, float to1, float from2, float to2)
+    {
+        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
 }
