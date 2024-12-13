@@ -39,28 +39,28 @@ public class Player : Entity
     public void Frolic()
     {
         var walkSpeed = 96f;
-        var antiBoop = 6;
+        var antiKiss = 6;
         var walkAroundAssist = 0.95f;
 
         Mover.TargetSpeed = walkSpeed;
         Mover.TargetDirection = Vector2.Zero;
 
-        Rectangle antiBooper = new Rectangle((int)Position.X + HitBox.X, (int)Position.Y + HitBox.Y, HitBox.Width, HitBox.Height);
-        antiBooper.Inflate(antiBoop, antiBoop); // owo inflation
+        Rectangle antiKisser = new Rectangle((int)Position.X + HitBox.X, (int)Position.Y + HitBox.Y, HitBox.Width, HitBox.Height);
+        antiKisser.Inflate(antiKiss, antiKiss); // owo inflation
 
         // UP
         if (GameInput.IsFunctionPressed(KeyFunctions.Up))
         {
-            // Don't boop walls!
+            // Don't kiss walls...
             if ((WasTouching & Touching.UP) == 0)
             {
                 Mover.TargetDirection.Y += -1f;
             }
             else if (GameInput.IsFunctionPressed(KeyFunctions.Left) == false && GameInput.IsFunctionPressed(KeyFunctions.Right) == false)
             {
-                // Walk around them!
-                Touching tl = Map.GetCollisionData(antiBooper.Left, antiBooper.Top);
-                Touching tr = Map.GetCollisionData(antiBooper.Right, antiBooper.Top);
+                // ...walk around them!
+                Touching tl = Map.GetCollisionData(antiKisser.Left, antiKisser.Top);
+                Touching tr = Map.GetCollisionData(antiKisser.Right, antiKisser.Top);
                 if ((tl & Touching.DOWN) == 0)
                 {
                     Mover.TargetDirection.X += -walkAroundAssist;
@@ -81,8 +81,8 @@ public class Player : Entity
             }
             else if (GameInput.IsFunctionPressed(KeyFunctions.Left) == false && GameInput.IsFunctionPressed(KeyFunctions.Right) == false)
             {
-                Touching bl = Map.GetCollisionData(antiBooper.Left, antiBooper.Bottom);
-                Touching br = Map.GetCollisionData(antiBooper.Right, antiBooper.Bottom);
+                Touching bl = Map.GetCollisionData(antiKisser.Left, antiKisser.Bottom);
+                Touching br = Map.GetCollisionData(antiKisser.Right, antiKisser.Bottom);
                 if ((bl & Touching.UP) == 0)
                 {
                     Mover.TargetDirection.X += -walkAroundAssist;
@@ -103,8 +103,8 @@ public class Player : Entity
             }
             else if (GameInput.IsFunctionPressed(KeyFunctions.Up) == false && GameInput.IsFunctionPressed(KeyFunctions.Down) == false)
             {
-                Touching tl = Map.GetCollisionData(antiBooper.Left, antiBooper.Top);
-                Touching bl = Map.GetCollisionData(antiBooper.Left, antiBooper.Bottom);
+                Touching tl = Map.GetCollisionData(antiKisser.Left, antiKisser.Top);
+                Touching bl = Map.GetCollisionData(antiKisser.Left, antiKisser.Bottom);
                 if ((tl & Touching.RIGHT) == 0)
                 {
                     Mover.TargetDirection.Y += -walkAroundAssist;
@@ -125,8 +125,8 @@ public class Player : Entity
             }
             else if (GameInput.IsFunctionPressed(KeyFunctions.Up) == false && GameInput.IsFunctionPressed(KeyFunctions.Down) == false)
             {
-                Touching tr = Map.GetCollisionData(antiBooper.Right, antiBooper.Top);
-                Touching br = Map.GetCollisionData(antiBooper.Right, antiBooper.Bottom);
+                Touching tr = Map.GetCollisionData(antiKisser.Right, antiKisser.Top);
+                Touching br = Map.GetCollisionData(antiKisser.Right, antiKisser.Bottom);
                 if ((tr & Touching.LEFT) == 0)
                 {
                     Mover.TargetDirection.Y += -walkAroundAssist;
