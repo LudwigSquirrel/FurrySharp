@@ -8,6 +8,7 @@ public enum DrawOrder
     EntitiesBG, //
     Entities, // Enemies, the player, etc.
     EntitiesFG, //
+    TerminalBG, //
     Text, // Text in dialogue.
     Fingy, // The pointer used for UI interaction.
     BlackOverlay // Black fadeout transition.
