@@ -82,13 +82,25 @@ public class Spline
 
         for (int i = 0; i < n - 1; i++)
         {
-            if (distance > LUT[i] && distance < LUT[i + 1])
+            if (distance >= LUT[i] && distance <= LUT[i + 1])
             {
                 return MathUtilities.Remap(distance, LUT[i], LUT[i + 1], (float)i / n, (float)(i + 1) / n);
             }
         }
 
-        throw new ApplicationException("There was no spot in the LUT that the distance seemed to fall between.");
+        /*
+         * Ludwig 12/12/2024:
+         * I've had this thrown a few times in testing. I'm hoping that the '>=' and '<=' (see above) will fix it. If
+         * not, I'll have to make a unit test to reproduce the issue better.
+         */
+        var e = new ApplicationException("There was no spot in the LUT that the distance seemed to fall between.");
+        e.Data.Add("distance", distance);
+        e.Data.Add("LUT Count", LUT.Count);
+        for (var i = 0; i < LUT.Count; i++)
+        {
+            e.Data.Add($"LUT[{i}]", LUT[i]);
+        }
+        throw e;
     }
 
     public float TToDist(float t)

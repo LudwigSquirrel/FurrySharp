@@ -14,7 +14,8 @@ public static class Program
     {
         RunNormally();
     }
-    
+
+#if DEBUG
     public static bool RunWithTest(GameLoopTestBundle test)
     {
         FurryGame = new FurryGame();
@@ -22,6 +23,7 @@ public static class Program
         RunGame();
         return FurryGame.Test.Passed;
     }
+#endif
 
     public static void RunNormally()
     {
