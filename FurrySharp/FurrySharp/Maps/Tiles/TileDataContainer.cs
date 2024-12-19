@@ -7,23 +7,23 @@ using static FurrySharp.Registry.GameConstants;
 
 namespace FurrySharp.Maps.Tiles;
 
-public class TileInfo
+public class TileDataContainer
 {
-    public string TileInfoPath { get; private set; }
+    public string ResourcePath { get; private set; }
     public List<TileData> Data = new(SUPPORTED_TILE_COUNT);
 
-    public static TileInfo FromResources(string name)
+    public static TileDataContainer FromResources(string name) // todo: tile info is confusing name.
     {
         var path = ResourceManager.GetTileMapPath(name);
 
         return FromDir(path);
     }
 
-    public static TileInfo FromDir(string path)
+    public static TileDataContainer FromDir(string path)
     {
-        var info = new TileInfo()
+        var info = new TileDataContainer()
         {
-            TileInfoPath = path,
+            ResourcePath = path,
         };
 
         for (int i = 0; i < SUPPORTED_TILE_COUNT; i++)
@@ -31,7 +31,7 @@ public class TileInfo
             info.Data.Add(new TileData());
         }
 
-        var srcPath = Path.Combine(info.TileInfoPath, "col.json");
+        var srcPath = Path.Combine(info.ResourcePath, "col.json");
         string text = File.ReadAllText(srcPath);
         var col = JsonSerializer.Deserialize<List<CollisionData>>(text);
         foreach (var c in col)

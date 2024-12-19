@@ -11,6 +11,7 @@ public enum DrawOrder
     TerminalBG, //
     Text, // Text in dialogue.
     Fingy, // The pointer used for UI interaction.
+    DebugLine, // Lines drawn for debug purposes.
     BlackOverlay // Black fadeout transition.
 }
 

@@ -3,6 +3,7 @@ using FurrySharp.Entities.Base;
 using FurrySharp.Entities.Components;
 using FurrySharp.Input;
 using FurrySharp.Logging;
+using FurrySharp.Maps;
 using FurrySharp.Resources;
 using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
@@ -15,13 +16,20 @@ public class Player : Entity
 {
     Spritesheet PlayerSpriteSheet;
     public VelMover Mover;
+
+    public Texture2D SwordTexture;
     public Trail SwordSwipeTrail;
 
     public Player()
     {
         PlayerSpriteSheet = new Spritesheet(ResourceManager.GetTexture("ludwig_player"), 32, 32);
+        
         SwordSwipeTrail = new Trail();
         SwordSwipeTrail.AddDefaultUnits(10);
+        SwordSwipeTrail.Spritesheet = PlayerSpriteSheet;
+
+        SwordTexture = ResourceManager.GetTexture("sword");
+        
         BoundingBox = EntityUtilities.BoundingBoxFromSpritesheet(PlayerSpriteSheet);
         HitBox = new Rectangle(11, 16, 11, 10);
         Mover = new VelMover();
@@ -143,7 +151,7 @@ public class Player : Entity
     {
         if (GameInput.JustPressedFunction(KeyFunctions.Attack1))
         {
-            SwordSwipeTrail.Spritesheet = PlayerSpriteSheet;
+            
         }
     }
 

@@ -5,6 +5,7 @@ using FurrySharp.Entities.Base;
 using FurrySharp.Logging;
 using FurrySharp.Maps;
 using FurrySharp.Registry;
+using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Entities;
@@ -131,4 +132,9 @@ public class EntityManager
         result = result && collisionGroups.Unregister(entity);
         return result;
     }
+    
+    // public RayCastResult RayCast(Vector2 start, Vector2 end)
+    // {
+    //     // todo: first process with map, then with entities.
+    // }
 }

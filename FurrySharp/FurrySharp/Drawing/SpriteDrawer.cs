@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FurrySharp.Multiplatform;
 using FurrySharp.Utilities;
@@ -120,6 +121,27 @@ public static class SpriteDrawer
             scale: scale,
             effects: SpriteEffects.None,
             layerDepth: z);
+    }
+
+    public static void DrawLine(Vector2 start, Vector2 end, Color color, float z = 0)
+    {
+        var edge = end - start;
+        var angle = (float)Math.Atan2(edge.Y, edge.X);
+
+        SpriteBatch.Draw(
+            SolidTex,
+            new Rectangle((int)start.X, (int)start.Y, (int)edge.Length(), 1),
+            null,
+            color,
+            angle,
+            new Vector2(0, 0),
+            SpriteEffects.None,
+            z);
+    }
+
+    public static void DrawDebugLine(Vector2 start, Vector2 end, Color color)
+    {
+        DrawLine(start, end, color, DrawingUtilities.GetDrawingZ(DrawOrder.DebugLine));
     }
 
     public static void UpdateRenderDestination(int displayWidth, int displayHeight, int scale)
