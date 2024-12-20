@@ -5,6 +5,7 @@
         public bool Exit { get; set; } = false;
         public bool UpdateEntities { get; protected set; } = true;
         public bool DrawPlayState { get; protected set; } = true;
+        public bool ShowIMGUI { get; set; } = true;
 
         public virtual void Create()
         {
@@ -25,6 +26,10 @@
         }
 
         public virtual void DrawUI()
+        {
+        }
+
+        public virtual void DoIMGUI()
         {
         }
     }

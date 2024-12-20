@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Threading;
 using FurrySharp.Audio;
+using FurrySharp.DeveloperTools;
 using FurrySharp.Drawing;
 using FurrySharp.Input;
 using FurrySharp.Registry;
@@ -12,9 +12,11 @@ using FurrySharp.States;
 using FurrySharp.UI;
 using FurrySharp.UI.Font;
 using FurrySharp.Utilities;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.ImGuiNet;
 using static FurrySharp.Registry.GameConstants;
 
 namespace FurrySharp;
@@ -27,6 +29,8 @@ public class FurryGame : Game, IStateSetter
 
     public UILabel FpsLabel { get; private set; }
     public Terminal Terminal { get; private set; }
+
+    public static ImGuiRenderer DeerImGooeyRenderer;
 
 
 #if DEBUG
@@ -59,6 +63,8 @@ public class FurryGame : Game, IStateSetter
     {
         InitGraphics();
         SpriteDrawer.Initialize(graphics.GraphicsDevice);
+        DeerImGooeyRenderer = new ImGuiRenderer(this);
+        ImGui.GetIO().MouseDrawCursor = true;
 
         //GlobalState.ResetValues();
 
@@ -77,6 +83,7 @@ public class FurryGame : Game, IStateSetter
     {
         ResourceManager.LoadContentManagerResources(Content);
         ResourceManager.LoadOtherResources();
+        DeerImGooeyRenderer.RebuildFontAtlas();
     }
 
     protected override void UnloadContent()
@@ -98,6 +105,11 @@ public class FurryGame : Game, IStateSetter
         {
             GlobalState.ShowFPS = !GlobalState.ShowFPS;
         }
+        
+        if (KeyInput.JustPressedKey(Keys.F3))
+        {
+            GlobalState.ShowDevTools = !GlobalState.ShowDevTools;
+        }
 
         if (KeyInput.JustPressedKey(Keys.OemTilde))
         {
@@ -112,7 +124,7 @@ public class FurryGame : Game, IStateSetter
             }
         }
 
-        if (KeyInput.JustPressedKey(Keys.Enter) && KeyInput.IsKeyPressed(Keys.LeftAlt))
+        if (KeyInput.JustPressedKey(Keys.Enter) && (KeyInput.IsKeyPressed(Keys.LeftAlt) || KeyInput.IsKeyPressed(Keys.RightAlt)))
         {
             if (GlobalState.GetResolution() == Resolution.Windowed)
             {
@@ -168,6 +180,17 @@ public class FurryGame : Game, IStateSetter
 
         SpriteDrawer.EndGUIDraw();
         SpriteDrawer.Render();
+
+        if (GlobalState.ShowDevTools)
+        {
+            DeerImGooeyRenderer.BeginLayout(gameTime);
+            DevTools.DoIMGUI();
+            if (CurrentState.ShowIMGUI)
+            {
+                CurrentState.DoIMGUI();
+            }
+            DeerImGooeyRenderer.EndLayout();
+        }
     }
 
     public void CreateAndSetState<T>() where T : State, new()

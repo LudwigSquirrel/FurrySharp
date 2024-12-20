@@ -4,6 +4,7 @@ using FurrySharp.Entities;
 using FurrySharp.Entities.Player;
 using FurrySharp.Maps;
 using FurrySharp.UI;
+using ImGuiNET;
 using Microsoft.Xna.Framework;
 
 using static FurrySharp.Registry.GameConstants;
@@ -55,5 +56,16 @@ public class SandboxState : State
     public override void DrawUI()
     {
         FingyCursor.DrawFingy();
+    }
+
+    public override void DoIMGUI()
+    {
+        ImGui.Begin("Sandbox State");
+        if (ImGui.Button("Spawn a friend"))
+        {
+            EntityManager.Spawn(out Player friend);
+            friend.Position = Player.Position + Vector2.One;
+        }
+        ImGui.End();
     }
 }
