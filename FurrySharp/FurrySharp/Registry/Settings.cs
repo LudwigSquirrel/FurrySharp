@@ -27,6 +27,8 @@ public class Settings
     
     public float SFXVolumeScale { get; set; } = 1f;
 
+    public bool ShowDevTools { get; set; } = false;
+
     [JsonInclude]
     public Dictionary<KeyFunctions, RebindableKey> KeyBindings
     {

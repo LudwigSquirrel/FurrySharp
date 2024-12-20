@@ -19,6 +19,12 @@ public static class GlobalState
     public static bool DrawHitBoxes = false;
     public static bool ShowFPS = false;
     public static bool ShowTerminal = false;
+    public static bool ShowDevTools
+    {
+        get => Settings.ShowDevTools;
+        set => Settings.ShowDevTools = value;
+    }
+
     public static bool ResolutionDirty = false;
     
     public static void SetResolution(Resolution resolution)
