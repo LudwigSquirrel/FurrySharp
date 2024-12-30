@@ -95,6 +95,10 @@ public class SandboxState : State
         var end = SpriteDrawer.Camera.ScreenToWorld(GameInput.PointerScreenPosition.ToVector2());
         Result result = Player.Map.DDA(start, end);
         SpriteDrawer.DrawDebugLine(start, result.End, result.TileFound ? Color.Red : Color.White);
+        //foreach (var point in result.Visited)
+        //{
+            //SpriteDrawer.DrawSprite(SpriteDrawer.SolidTex, new Rectangle(point.X * TILE_SIZE, point.Y * TILE_SIZE, TILE_SIZE, TILE_SIZE), color: Color.Yellow);
+        //}
     }
 
     public override void DrawUI()

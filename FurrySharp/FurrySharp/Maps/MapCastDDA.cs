@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using FurrySharp.Entities.Base;
 using FurrySharp.Maps.Tiles;
@@ -12,6 +13,7 @@ public struct Result
     public bool TileFound;
     public Point TilePosition;
     public Vector2 End;
+    public List<Point> Visited;
 }
 
 public static class MapCastDDA
@@ -77,8 +79,10 @@ public static class MapCastDDA
 
         bool bTileFound = false;
         float fDistance = 0f;
+        List<Point> visited = new List<Point>();
         while (!bTileFound && fDistance < maxDistance)
         {
+            visited.Add(vMapCheck);
             // Walk
             if (vRayLength1D.X < vRayLength1D.Y)
             {
@@ -96,11 +100,7 @@ public static class MapCastDDA
             // Check for collision.
             int tileIndex = map.GetTile((int)MapLayer.BG, vMapCheck.X, vMapCheck.Y);
             TileDataContainer.TileData data = map.TileDataContainer.GetData(tileIndex);
-            // if ((data.CollisionDirection & collisionMask) != 0)
-            // {
-            //     bTileFound = true;
-            // }
-            if (data.CollisionDirection == Touching.NONE)
+            if ((data.CollisionDirection & collisionMask) != 0)
             {
                 bTileFound = true;
             }
@@ -109,7 +109,8 @@ public static class MapCastDDA
         {
             TileFound = bTileFound,
             TilePosition = vMapCheck,
-            End = vStart + vDirection * fDistance * TILE_SIZE
+            End = (vStart * TILE_SIZE) + (vDirection * (fDistance * TILE_SIZE)),
+            Visited = visited,
         };
     }
 }
