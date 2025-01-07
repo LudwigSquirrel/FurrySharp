@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace FurrySharp.Entities.Player;
 
-[Collision(MapCollider = true)]
+[Collision(MapCollider = true, RayCastable = true)]
 public class Player : Entity
 {
     Spritesheet PlayerSpriteSheet;
@@ -32,6 +32,7 @@ public class Player : Entity
         
         BoundingBox = EntityUtilities.BoundingBoxFromSpritesheet(PlayerSpriteSheet);
         HitBox = new Rectangle(11, 16, 11, 10);
+        HitRadius = 16f;
         Mover = new VelMover();
     }
 
@@ -151,7 +152,8 @@ public class Player : Entity
     {
         if (GameInput.JustPressedFunction(KeyFunctions.Attack1))
         {
-            
+            var result = Manager.RayCast<Player>(Position, Position + new Vector2(10, 0), this);
+            DebugLogger.AddInfo($"Raycast result: {result.EntityCastResult?.Entity?.InstanceId}");
         }
     }
 

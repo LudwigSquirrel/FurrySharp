@@ -8,7 +8,7 @@ using static FurrySharp.Registry.GameConstants;
 
 namespace FurrySharp.Maps;
 
-public struct Result
+public struct DDAResult
 {
     public bool TileFound;
     public Point TilePosition;
@@ -18,7 +18,7 @@ public struct Result
 
 public static class MapCastDDA
 {
-    public static Result DDA(this MapInfo map, Vector2 vStart, Vector2 vEnd)
+    public static DDAResult DDA(this MapInfo map, Vector2 vStart, Vector2 vEnd)
     {
         Vector2 normalized = Vector2.Normalize(vEnd - vStart);
         return DDA(map, vStart, normalized, Vector2.Distance(vStart, vEnd));
@@ -26,7 +26,7 @@ public static class MapCastDDA
 
     // Differential Digital Analysis (https://www.youtube.com/watch?v=NbSee-XM7WA&t=586s)
     // Direction is assumed to be normalized.
-    public static Result DDA(this MapInfo map, Vector2 vStart, Vector2 vDirection, float maxDistance)
+    public static DDAResult DDA(this MapInfo map, Vector2 vStart, Vector2 vDirection, float maxDistance)
     {
         // vStart is the starting position of the ray. It is divided by TILE_SIZE because those are our units.
         vStart /= TILE_SIZE;
@@ -105,7 +105,7 @@ public static class MapCastDDA
                 bTileFound = true;
             }
         }
-        return new Result()
+        return new DDAResult()
         {
             TileFound = bTileFound,
             TilePosition = vMapCheck,

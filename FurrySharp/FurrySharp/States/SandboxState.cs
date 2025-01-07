@@ -93,7 +93,7 @@ public class SandboxState : State
 
         var start = Player.Position + Player.HitBox.Center.ToVector2();
         var end = SpriteDrawer.Camera.ScreenToWorld(GameInput.PointerScreenPosition.ToVector2());
-        Result result = Player.Map.DDA(start, end);
+        DDAResult result = Player.Map.DDA(start, end);
         SpriteDrawer.DrawDebugLine(start, result.End, result.TileFound ? Color.Red : Color.White);
         //foreach (var point in result.Visited)
         //{

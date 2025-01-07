@@ -39,6 +39,8 @@ public class Entity
     public Rectangle HitBox;
     public Rectangle BoundingBox;
 
+    public float HitRadius;
+
     public Touching Touching = Touching.NONE;
     public Touching WasTouching = Touching.NONE;
     public Touching AllowCollisions = Touching.ANY;
@@ -69,6 +71,16 @@ public class Entity
             SpriteDrawer.DrawSprite(SpriteDrawer.SolidTex, new Rectangle((int)Position.X + HitBox.X + HitBox.Width, (int)Position.Y + HitBox.Y, 1, HitBox.Height), color: (WasTouching & Touching.RIGHT) != 0 ? Color.Red : Color.White);
             SpriteDrawer.DrawSprite(SpriteDrawer.SolidTex, new Rectangle((int)Position.X + HitBox.X, (int)Position.Y + HitBox.Y, HitBox.Width, 1), color: (WasTouching & Touching.UP) != 0 ? Color.Red : Color.White);
             SpriteDrawer.DrawSprite(SpriteDrawer.SolidTex, new Rectangle((int)Position.X + HitBox.X, (int)Position.Y + HitBox.Y + HitBox.Height, HitBox.Width, 1), color: (WasTouching & Touching.DOWN) != 0 ? Color.Red : Color.White);
+        }
+        
+        if (GlobalState.DrawHitRadii)
+        {
+            Vector2[] points = MathUtilities.PlotCircle(Position + HitBox.Center.ToVector2(), HitRadius, 8);
+            for (var i = 0; i < points.Length; i++)
+            {
+                //SpriteDrawer.DrawSprite(SpriteDrawer.SolidTex, new Rectangle((int)points[i].X, (int)points[i].Y, 1, 1), color: Color.White);
+                SpriteDrawer.DrawLine(points[i], points[(i + 1) % points.Length], Color.White);
+            }
         }
     }
 

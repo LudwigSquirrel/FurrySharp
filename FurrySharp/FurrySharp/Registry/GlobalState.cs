@@ -17,6 +17,7 @@ public static class GlobalState
     public static Language CurrentLanguage => Settings.Language;
     public static bool DrawTextWriterAreas = false;
     public static bool DrawHitBoxes = false;
+    public static bool DrawHitRadii = false;
     public static bool ShowFPS = false;
     public static bool ShowTerminal = false;
     public static bool ShowDevTools

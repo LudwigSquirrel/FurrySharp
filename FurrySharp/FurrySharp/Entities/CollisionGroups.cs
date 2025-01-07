@@ -4,8 +4,17 @@ using System.Linq;
 using System.Reflection;
 using FurrySharp.Entities.Base;
 using FurrySharp.Maps;
+using FurrySharp.Utilities;
+using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Entities;
+
+public struct EntityCastResult
+{
+    public Entity Entity;
+    public bool WasHit => Entity != null;
+    public CircleLineIntersectionResult CircleLineIntersection;
+}
 
 public class CollisionGroups
 {
@@ -18,6 +27,7 @@ public class CollisionGroups
     private readonly Dictionary<Type, Group> groups = new();
     private readonly List<Entity> mapColliders = new();
     private readonly List<Entity> mapEntities = new();
+    private readonly List<Entity> raycastEntities = new();
 
     public void Register(Entity entity)
     {
@@ -42,6 +52,11 @@ public class CollisionGroups
             mapEntities.Add(entity);
         }
 
+        if (cs.Any(c => c.RayCastable))
+        {
+            raycastEntities.Add(entity);
+        }
+
         // Iterate through all collision attributes of the entity
         // Add the entity as a collider for the enumerated target types.
         foreach (Type target in cs.SelectMany(c => c.Targets))
@@ -54,6 +69,7 @@ public class CollisionGroups
     {
         var result = mapColliders.Remove(entity);
         result = mapEntities.Remove(entity) || result;
+        result = raycastEntities.Remove(entity) || result;
         foreach (var pair in groups)
         {
             /*
@@ -109,5 +125,39 @@ public class CollisionGroups
         }
 
         return g;
+    }
+
+    public EntityCastResult RaycastForEntity<TTarget>(Vector2 start, Vector2 end, Entity excluding = null) where TTarget : Entity
+    {
+        float minT = float.MaxValue;
+        Entity closest = null;
+        CircleLineIntersectionResult circleLine = default;
+        foreach (TTarget target in raycastEntities.OfType<TTarget>())
+        {
+            if (ReferenceEquals(target, excluding))
+            {
+                continue;
+            }
+
+            var result = CircleLineIntersection.Intersect(
+                circleCenter: target.Position,
+                radius: target.HitRadius,
+                lineStart: start,
+                lineEnd: end
+            );
+
+            if (result.Intersects && result.MinRealT < minT)
+            {
+                minT = result.MinRealT;
+                closest = target;
+                circleLine = result;
+            }
+        }
+
+        return new EntityCastResult
+        {
+            Entity = closest,
+            CircleLineIntersection = circleLine,
+        };
     }
 }

@@ -133,8 +133,27 @@ public class EntityManager
         return result;
     }
     
-    // public RayCastResult RayCast(Vector2 start, Vector2 end)
-    // {
-    //     // todo: first process with map, then with entities.
-    // }
+    public RayCastResult RayCast<TTarget>(Vector2 start, Vector2 end, Entity excluding = null) where TTarget : Entity
+    {
+        if (Map != null)
+        {
+            DDAResult ddaResult = Map.DDA(start, end);
+            EntityCastResult entityCastResult = collisionGroups.RaycastForEntity<TTarget>(start, ddaResult.End, excluding);
+
+            return new RayCastResult()
+            {
+                DDAResult = ddaResult,
+                EntityCastResult = entityCastResult,
+            };
+        }
+        else
+        {
+            EntityCastResult entityCastResult = collisionGroups.RaycastForEntity<TTarget>(start, end, excluding);
+
+            return new RayCastResult()
+            {
+                EntityCastResult = entityCastResult,
+            };
+        }
+    }
 }
