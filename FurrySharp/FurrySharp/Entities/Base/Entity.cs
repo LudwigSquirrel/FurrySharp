@@ -76,11 +76,7 @@ public class Entity
         if (GlobalState.DrawHitRadii)
         {
             Vector2[] points = MathUtilities.PlotCircle(Position + HitBox.Center.ToVector2(), HitRadius, 8);
-            for (var i = 0; i < points.Length; i++)
-            {
-                //SpriteDrawer.DrawSprite(SpriteDrawer.SolidTex, new Rectangle((int)points[i].X, (int)points[i].Y, 1, 1), color: Color.White);
-                SpriteDrawer.DrawLine(points[i], points[(i + 1) % points.Length], Color.White);
-            }
+            SpriteDrawer.DrawLines(points, Color.White);
         }
     }
 

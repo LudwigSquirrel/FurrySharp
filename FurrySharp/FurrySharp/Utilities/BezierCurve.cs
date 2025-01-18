@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Utilities;
 
-public class BezierCurve
+public class BezierCurveSegment
 {
     public Vector2 A;
     public Vector2 B;
@@ -23,24 +23,29 @@ public class BezierCurve
     }
 }
 
-public class Spline
+public class BezierCurve
 {
     [JsonInclude]
-    public List<BezierCurve> Segments = new();
+    public List<BezierCurveSegment> Segments = new();
 
-    public float SplineLength => LUT[^1];
+    public float SplineLength => LUT.Count > 0 ? LUT[^1] : 0;
 
     public List<float> LUT = new();
 
     public void UpdateLengthAndLookupTable(int samples = 100) // estimated length
     {
+        if (Segments.Count == 0)
+        {
+            return;
+        }
+
         float step = 1f / samples;
         float length = 0f;
         LUT.Clear();
         LUT.Add(0f);
         for (int i = 0; i < Segments.Count; i++)
         {
-            BezierCurve segment = Segments[i];
+            BezierCurveSegment segment = Segments[i];
             for (float t = 0; t < 1; t += step)
             {
                 Vector2 p0 = segment.GetPos(t);
@@ -53,6 +58,11 @@ public class Spline
 
     public Vector2[] GetEvenlySpacedPoints(int numPoints, float start = 0f, float end = 1f)
     {
+        if (Segments.Count == 0)
+        {
+            return new[] { Vector2.Zero };
+        }
+
         Vector2[] points = new Vector2[numPoints];
         float current = TToDist(start);
         float span = (TToDist(end) - current) / numPoints;
@@ -100,6 +110,7 @@ public class Spline
         {
             e.Data.Add($"LUT[{i}]", LUT[i]);
         }
+
         throw e;
     }
 
@@ -113,7 +124,7 @@ public class Spline
         {
             return SplineLength;
         }
-        
+
         float foo = (t - (float)i1 / n) * n;
         return MathHelper.Lerp(LUT[i1], LUT[i2], foo);
     }
@@ -122,7 +133,7 @@ public class Spline
     {
         t = Math.Clamp(t, 0, 1);
         int i = (int)((Segments.Count - 1) * t);
-        BezierCurve seg = Segments[i];
+        BezierCurveSegment seg = Segments[i];
 
         var segSpan = 1f / Segments.Count;
         var bar = segSpan * i;

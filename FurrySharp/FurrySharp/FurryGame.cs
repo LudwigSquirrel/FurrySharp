@@ -76,7 +76,7 @@ public class FurryGame : Game, IStateSetter
         Terminal = new Terminal();
 
         Window.Title = "Furry Game";
-        CreateAndSetState<SandboxState>();
+        CreateAndSetState<CatSplineEditorState>();
     }
 
     protected override void LoadContent()
@@ -202,6 +202,18 @@ public class FurryGame : Game, IStateSetter
         CurrentState = new T();
 
         CurrentState.Create();
+    }
+    
+    public void CreateAndSetState(Type type)
+    {
+        // foreach (var effect in GlobalState.AllEffects)
+        // {
+        //     effect.Deactivate();
+        // }
+
+        CurrentState = (State)Activator.CreateInstance(type);
+
+        CurrentState!.Create();
     }
 
     private void InitGraphics()

@@ -3,17 +3,17 @@ using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Test;
 
-public class SplineTests
+public class BezierCurveTests
 {
     const float LengthTolerance = 0.1f;
     const float PointTolerance = 1f; // 1 pixel
     [Test]
     public void TestSpline()
     {
-        var spline = new Spline();
+        var spline = new BezierCurve();
         
         // Straight line
-        spline.Segments.Add(new BezierCurve()
+        spline.Segments.Add(new BezierCurveSegment()
         {
             A = new Vector2(0,0),
             B = new Vector2(0, 0),
@@ -26,28 +26,28 @@ public class SplineTests
         // Circle (approximation, don't at me)
         // see: https://stackoverflow.com/questions/1734745/how-to-create-circle-with-b%C3%A9zier-curves
         spline.Segments.Clear();
-        var curve1 = new BezierCurve()
+        var curve1 = new BezierCurveSegment()
         {
             A = new Vector2(1, 0),
             B = new Vector2(1, 0.552284749831f),
             C = new Vector2(0.552284749831f, 1),
             D = new Vector2(0, 1),
         };
-        var curve2 = new BezierCurve()
+        var curve2 = new BezierCurveSegment()
         {
             A = new Vector2(0, 1),
             B = new Vector2(-0.552284749831f, 1),
             C = new Vector2(-1, 0.552284749831f),
             D = new Vector2(-1, 0),
         };
-        var curve3 = new BezierCurve()
+        var curve3 = new BezierCurveSegment()
         {
             A = new Vector2(-1, 0),
             B = new Vector2(-1, -0.552284749831f),
             C = new Vector2(-0.552284749831f, -1),
             D = new Vector2(0, -1),
         };
-        var curve4 = new BezierCurve()
+        var curve4 = new BezierCurveSegment()
         {
             A = new Vector2(0, -1),
             B = new Vector2(0.552284749831f, -1),

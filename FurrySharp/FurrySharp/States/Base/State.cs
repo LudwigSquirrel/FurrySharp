@@ -32,5 +32,9 @@
         public virtual void DoIMGUI()
         {
         }
+        
+        public virtual void DoIMGUIMainMenuBar()
+        {
+        }
     }
 }

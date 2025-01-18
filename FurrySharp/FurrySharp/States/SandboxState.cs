@@ -29,7 +29,7 @@ public class SandboxState : State
 
     public Trail Trail = new();
 
-    public Spline Spline = new();
+    // public Spline BezierCurve = new();
 
     public override void Create()
     {
@@ -47,14 +47,14 @@ public class SandboxState : State
         Trail.AddDefaultUnits(20);
         Trail.Spritesheet = spritesheet;
         
-        Spline.Segments.Add(new BezierCurve()
-        {
-            A = new Vector2(TILE_SIZE * 5, TILE_SIZE * 5),
-            B = new Vector2(TILE_SIZE * 5, 0),
-            C = new Vector2(TILE_SIZE * 10, 0),
-            D = new Vector2(TILE_SIZE * 10, TILE_SIZE * 5),
-        });
-        Spline.UpdateLengthAndLookupTable();
+        // BezierCurve.Segments.Add(new BezierCurve()
+        // {
+        //     A = new Vector2(TILE_SIZE * 5, TILE_SIZE * 5),
+        //     B = new Vector2(TILE_SIZE * 5, 0),
+        //     C = new Vector2(TILE_SIZE * 10, 0),
+        //     D = new Vector2(TILE_SIZE * 10, TILE_SIZE * 5),
+        // });
+        // BezierCurve.UpdateLengthAndLookupTable();
     }
 
     public override void UpdateState()

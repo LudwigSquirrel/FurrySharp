@@ -40,4 +40,9 @@ public class MathUtilities
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
+
+    public static float Clamp(float f, float min, float max)
+    {
+        return MathF.Max(min, MathF.Min(f, max));
+    }
 }

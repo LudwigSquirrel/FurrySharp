@@ -139,6 +139,15 @@ public static class SpriteDrawer
             z);
     }
 
+    public static void DrawLines(Vector2[] points, Color color, bool closed = true, float z = 0)
+    {
+        var length = closed ? points.Length : points.Length - 1;
+        for (var i = 0; i < length; i++)
+        {
+            DrawLine(points[i], points[(i + 1) % points.Length], color, z);
+        }
+    }
+
     public static void DrawDebugLine(Vector2 start, Vector2 end, Color color)
     {
         DrawLine(start, end, color, DrawingUtilities.GetDrawingZ(DrawOrder.DebugLine));

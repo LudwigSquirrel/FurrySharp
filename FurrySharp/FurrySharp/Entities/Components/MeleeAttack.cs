@@ -6,6 +6,6 @@ namespace FurrySharp.Entities.Components;
 public class MeleeAttack
 {
     public Vector2 MeleeOrigin;
-    public Spline MeleeTipTravelSpline;
+    public CatSpline MeleeTipTravelSpline;
     public float MeleeCollisionArc;
 }
