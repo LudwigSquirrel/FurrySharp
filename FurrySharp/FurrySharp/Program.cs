@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using FurrySharp.Logging;
 using FurrySharp.Resources;
 using FurrySharp.Utilities;
@@ -41,6 +42,19 @@ public static class Program
         catch (Exception ex)
         {
             DebugLogger.AddException(ex);
+            foreach (var autoSaver in FurryGame.AutoSavers)
+            {
+                try
+                {
+                    autoSaver.PerformSave();
+                }
+                catch
+                {
+                    DebugLogger.AddCritical($"Could not perform save for resource {autoSaver.ResourceName}");
+                    DebugLogger.AddException(ex);
+                }
+            }
+
             throw;
         }
     }

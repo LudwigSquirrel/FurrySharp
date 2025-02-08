@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using FurrySharp.Multiplatform;
+using FurrySharp.Resources;
 using FurrySharp.States;
 using static ImGuiNET.ImGui;
 
@@ -17,6 +19,16 @@ public static class DevTools
                 if (MenuItem($"{currentState.GetType().Name}"))
                 {
                     currentState.ShowIMGUI = !currentState.ShowIMGUI;
+                }
+
+                if (MenuItem("Open auto save folder"))
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = @"c:\windows\explorer.exe",
+                        Arguments = ResourceInstanceAutoSaver.AutoSaveDir.TrimEnd('/')
+                    };
+                    Process.Start(startInfo);
                 }
                 EndMenu();
             }

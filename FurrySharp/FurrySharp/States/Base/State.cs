@@ -13,12 +13,10 @@
 
         public virtual void Initialize()
         {
-
         }
 
         public virtual void UpdateState()
         {
-
         }
 
         public virtual void DrawState()
@@ -32,7 +30,7 @@
         public virtual void DoIMGUI()
         {
         }
-        
+
         public virtual void DoIMGUIMainMenuBar()
         {
         }

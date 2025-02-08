@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -32,6 +33,7 @@ public class FurryGame : Game, IStateSetter
 
     public static ImGuiRenderer DeerImGooeyRenderer;
 
+    public static List<ResourceInstanceAutoSaver> AutoSavers = new();
 
 #if DEBUG
     public GameLoopTestBundle Test;
@@ -57,6 +59,13 @@ public class FurryGame : Game, IStateSetter
         {
             Directory.CreateDirectory(SavePath + "Saves/");
         }
+
+        if (!Directory.Exists(SavePath + "OttoSaves/"))
+        {
+            Directory.CreateDirectory(SavePath + "OttoSaves/");
+        }
+
+        ResourceInstanceAutoSaver.AutoSaveDir = SavePath + "OttoSaves/";
     }
 
     protected override void Initialize()
@@ -76,7 +85,7 @@ public class FurryGame : Game, IStateSetter
         Terminal = new Terminal();
 
         Window.Title = "Furry Game";
-        CreateAndSetState<CatSplineEditorState>();
+        CreateAndSetState<SandboxState>();
     }
 
     protected override void LoadContent()
@@ -104,7 +113,7 @@ public class FurryGame : Game, IStateSetter
         {
             GlobalState.ShowFPS = !GlobalState.ShowFPS;
         }
-        
+
         if (GameInput.JustPressedKey(Keys.F3))
         {
             GlobalState.ShowDevTools = !GlobalState.ShowDevTools;
@@ -188,31 +197,20 @@ public class FurryGame : Game, IStateSetter
             {
                 CurrentState.DoIMGUI();
             }
+
             DeerImGooeyRenderer.EndLayout();
         }
     }
 
     public void CreateAndSetState<T>() where T : State, new()
     {
-        // foreach (var effect in GlobalState.AllEffects)
-        // {
-        //     effect.Deactivate();
-        // }
-
         CurrentState = new T();
-
         CurrentState.Create();
     }
-    
+
     public void CreateAndSetState(Type type)
     {
-        // foreach (var effect in GlobalState.AllEffects)
-        // {
-        //     effect.Deactivate();
-        // }
-
         CurrentState = (State)Activator.CreateInstance(type);
-
         CurrentState!.Create();
     }
 

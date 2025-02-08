@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FurrySharp.Drawing;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Utilities;
@@ -21,6 +19,7 @@ public class CatSpline
         {
             t %= ControlPoints.Count;
         }
+
         float tClamped = MathUtilities.Clamp(t, 0, ControlPoints.Count - (Loop ? 0.01f : 3.01f));
 
         // Catmull-Rom spline algorithm

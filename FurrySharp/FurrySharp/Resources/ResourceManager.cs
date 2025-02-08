@@ -17,7 +17,7 @@ namespace FurrySharp.Resources;
 public static class ResourceManager
 {
     private static Dictionary<string, Texture2D> textures = new();
-    private static Dictionary<string, Spline> splines = new();
+    private static Dictionary<string, CatSpline> splines = new();
     private static Dictionary<string, string> music = new();
     private static Dictionary<string, string> ambience = new();
     private static Dictionary<string, string> map = new();
@@ -187,7 +187,7 @@ public static class ResourceManager
             try
             {
                 string splineData = File.ReadAllText(file.FullName);
-                splines[key] = JsonSerializer.Deserialize<Spline>(splineData);
+                splines[key] = JsonSerializer.Deserialize<CatSpline>(splineData);
             }
             catch (Exception)
             {
