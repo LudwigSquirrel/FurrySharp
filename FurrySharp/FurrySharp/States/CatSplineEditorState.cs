@@ -112,7 +112,8 @@ public class CatSplineEditorState : State
                 CatSpline.ControlPoints[i] += trans;
             }
         }
-        
+
+        CatSpline.UpdateLengthAndLookupTable();
         AutoSaver.DoAutoSave();
     }
 
@@ -121,8 +122,8 @@ public class CatSplineEditorState : State
         base.DrawState();
         for (float t = 0; t <= CatSpline.ControlPoints.Count; t += Resolution)
         {
-            Vector2 start = CatSpline.GetPoint(t) * Zoom;
-            Vector2 end = CatSpline.GetPoint(t + Resolution) * Zoom;
+            Vector2 start = CatSpline.GetPos(t) * Zoom;
+            Vector2 end = CatSpline.GetPos(t + Resolution) * Zoom;
             Color color = Color.Lerp(Color.MonoGameOrange, Color.Black, MathF.Sin((t - GameTimes.TotalTime) * 4f));
             SpriteDrawer.DrawLine(start, end, color);
         }
@@ -145,13 +146,15 @@ public class CatSplineEditorState : State
                 FileDialog.ActionLabel = "Save";
                 Saving = true;
             }
+
             if (ImGui.MenuItem("Load"))
             {
                 AutoSaver.PerformSave();
                 FileDialog.ActionLabel = "Load";
                 Loading = true;
             }
-            ImGui.EndMenu();   
+
+            ImGui.EndMenu();
         }
     }
 
@@ -174,6 +177,7 @@ public class CatSplineEditorState : State
                     DebugLogger.AddException(exception);
                 }
             }
+
             return;
         }
 
@@ -196,12 +200,14 @@ public class CatSplineEditorState : State
                     DebugLogger.AddException(exception);
                 }
             }
+
             return;
         }
 
         ImGui.Begin("CatSpline Editor");
         ImGui.InputText("Spline Name", ref SplineName, 100);
         AutoSaver.ResourceName = SplineName;
+        ImGui.LabelText("Spline Length", $"{CatSpline.SplineLength}");
         ImGui.Checkbox("Loop", ref CatSpline.Loop);
         ImGui.DragFloat("Move Speed", ref MoveSpeed, 0.01f, 0.1f, 10f, "%.2f");
         ImGui.DragFloat("Bump Amount", ref BumpAmount, 0.01f, 0.1f, 1f, "%.2f");

@@ -93,7 +93,7 @@ public static class SpriteDrawer
         SpriteBatch.End();
     }
 
-    public static void DrawSprite(Texture2D texture, Rectangle rect, Rectangle? sRect = null, Color? color = null, float rotation = 0, SpriteEffects flip = SpriteEffects.None, float z = 0)
+    public static void DrawSprite(Texture2D texture, Rectangle rect, Rectangle? sRect = null, Color? color = null, float rotation = 0, Vector2? origin = null, SpriteEffects flip = SpriteEffects.None, float z = 0)
     {
         var r = new Rectangle(rect.X + rect.Width / 2, rect.Y + rect.Height / 2, rect.Width, rect.Height);
 
@@ -104,11 +104,12 @@ public static class SpriteDrawer
             color: color ?? Color.White,
             rotation: rotation,
             // ReSharper disable twice PossibleLossOfFraction
-            origin: new Vector2((sRect ?? texture.Bounds).Width / 2, (sRect ?? texture.Bounds).Height / 2),
+            origin: origin ?? new Vector2((sRect ?? texture.Bounds).Width / 2, (sRect ?? texture.Bounds).Height / 2),
             effects: flip,
             layerDepth: z);
     }
 
+    // todo: rethink drawing commands. scale is not intuitive.
     public static void DrawSprite(Texture2D texture, Vector2 pos, Rectangle? sRect = null, Color? color = null, float rotation = 0, float scale = 1f, float z = 0)
     {
         SpriteBatch.Draw(
