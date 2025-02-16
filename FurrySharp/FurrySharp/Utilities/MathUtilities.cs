@@ -45,4 +45,9 @@ public class MathUtilities
     {
         return MathF.Max(min, MathF.Min(f, max));
     }
+
+    public static float Circumference(float radius)
+    {
+        return MathF.PI * 2 * radius;
+    }
 }

@@ -7,22 +7,23 @@ public class BezierCurveTests
 {
     const float LengthTolerance = 0.1f;
     const float PointTolerance = 1f; // 1 pixel
+
     [Test]
     public void TestSpline()
     {
         var spline = new BezierCurve();
-        
+
         // Straight line
         spline.Segments.Add(new BezierCurveSegment()
         {
-            A = new Vector2(0,0),
+            A = new Vector2(0, 0),
             B = new Vector2(0, 0),
             C = new Vector2(0, 1),
             D = new Vector2(0, 1),
         });
         spline.UpdateLengthAndLookupTable();
         Assert.That(spline.SplineLength, Is.EqualTo(1f).Within(LengthTolerance));
-        
+
         // Circle (approximation, don't at me)
         // see: https://stackoverflow.com/questions/1734745/how-to-create-circle-with-b%C3%A9zier-curves
         spline.Segments.Clear();

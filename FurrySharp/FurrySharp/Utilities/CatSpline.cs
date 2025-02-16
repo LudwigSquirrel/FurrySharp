@@ -37,7 +37,7 @@ public class CatSpline
             }
         }
     }
-    
+
     public Vector2[] GetEvenlySpacedPoints(int numPoints, float start = 0f, float end = 1f)
     {
         if (NotHasMinimumNumberOfControlPoints())
@@ -60,6 +60,11 @@ public class CatSpline
 
     public float TToDist(float t)
     {
+        if (NotHasMinimumNumberOfControlPoints())
+        {
+            return 0;
+        }
+
         int n = LUT.Count;
         t = Math.Clamp(t, 0, ControlPoints.Count - (Loop ? 0 : 3));
         int i1 = (int)(n * t);
@@ -75,6 +80,11 @@ public class CatSpline
 
     public float DistToT(float distance)
     {
+        if (NotHasMinimumNumberOfControlPoints())
+        {
+            return 0;
+        }
+
         int n = LUT.Count;
 
         if (distance > SplineLength)
@@ -108,7 +118,7 @@ public class CatSpline
                 return MathUtilities.Remap(distance, LUT[i], LUT[i + 1], (float)i / n, (float)(i + 1) / n) * ControlPoints.Count - (Loop ? 0 : 3);
             }
         }
-        
+
         /*
          * Ludwig 12/12/2024:
          * I've had this thrown a few times in testing. I'm hoping that the '>=' and '<=' (see above) will fix it. If
