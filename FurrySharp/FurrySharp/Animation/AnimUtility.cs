@@ -15,4 +15,9 @@ public static class AnimUtility
     {
         return MathF.Sin(x * MathF.PI / 2);
     }
+
+    public static float EaseInOutSine(float x)
+    {
+        return -(MathF.Cos(MathF.PI * x) - 1) / 2;
+    }
 }

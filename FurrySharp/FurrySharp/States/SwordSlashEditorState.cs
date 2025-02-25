@@ -1,4 +1,5 @@
-﻿using FurrySharp.Resources;
+﻿using FurrySharp.Entities.Components;
+using FurrySharp.Resources;
 using ImGuiNET;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,8 +7,11 @@ namespace FurrySharp.States;
 
 public class SwordSlashEditorState : State
 {
+    // TODO: This state is non functional. It would require lots of GUI, and I would prefer to get something working
+    // sooner rather than later.
     private Texture Ludwig;
     private CatSplineEditorState CatSplineEditorState;
+    private MeleeAttack MeleeAttack;
     
     public float Zoom = 1f;
     public string LoadedSpline = "slash";
