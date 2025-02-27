@@ -67,7 +67,7 @@ public class Settings
         ValidateHelper(KeyFunctions.Down, new RebindableKey(new List<Keys>() { Keys.S, Keys.Down }));
         ValidateHelper(KeyFunctions.Left, new RebindableKey(new List<Keys>() { Keys.A, Keys.Left }));
         ValidateHelper(KeyFunctions.Right, new RebindableKey(new List<Keys>() { Keys.D, Keys.Right }));
-        ValidateHelper(KeyFunctions.Attack1, new RebindableKey(MouseButts.Left));
+        ValidateHelper(KeyFunctions.Attack1, new RebindableKey(new List<Keys>() { Keys.J, Keys.Z }));
         return;
 
         void ValidateHelper(KeyFunctions function, RebindableKey defaultKey)

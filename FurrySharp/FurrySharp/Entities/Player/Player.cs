@@ -30,7 +30,7 @@ public class Player : Entity
 
     public Player()
     {
-        PlayerSpriteSheet = new Spritesheet(ResourceManager.GetTexture("ludwig_player"), 32, 32);
+        PlayerSpriteSheet = new Spritesheet(ResourceManager.GetTexture("ludwig_handsome"), 64, 64);
 
         SwordTexture = ResourceManager.GetTexture("sword");
 
@@ -52,19 +52,26 @@ public class Player : Entity
     public void Frolic()
     {
         var walkSpeed = 96f;
+        var walkAndSwipeSpeed = 48f;
         var antiKiss = 6;
         var walkAroundAssist = 0.95f;
 
-        Mover.TargetSpeed = walkSpeed;
+        Mover.TargetSpeed = MathHelper.Lerp(walkSpeed, walkAndSwipeSpeed, SwordSwipiness);
         Mover.TargetDirection = Vector2.Zero;
 
         Rectangle antiKisser = new Rectangle((int)Position.X + HitBox.X, (int)Position.Y + HitBox.Y, HitBox.Width, HitBox.Height);
         antiKisser.Inflate(antiKiss, antiKiss); // owo inflation
 
+        bool doTurn = SwordSwipiness == 0;
+
         // UP
         if (GameInput.IsFunctionPressed(KeyFunctions.Up))
         {
-            Facing = Facing.N;
+            if (doTurn)
+            {
+                Facing = Facing.N;
+            }
+
             // Don't kiss walls...
             if ((WasTouching & Touching.UP) == 0)
             {
@@ -89,7 +96,11 @@ public class Player : Entity
         // DOWN
         if (GameInput.IsFunctionPressed(KeyFunctions.Down))
         {
-            Facing = Facing.S;
+            if (doTurn)
+            {
+                Facing = Facing.S;
+            }
+
             if ((WasTouching & Touching.DOWN) == 0)
             {
                 Mover.TargetDirection.Y += 1f;
@@ -112,7 +123,11 @@ public class Player : Entity
         // LEFT
         if (GameInput.IsFunctionPressed(KeyFunctions.Left))
         {
-            Facing = Facing.W;
+            if (doTurn)
+            {
+                Facing = Facing.W;
+            }
+
             if ((WasTouching & Touching.LEFT) == 0)
             {
                 Mover.TargetDirection.X += -1f;
@@ -135,7 +150,11 @@ public class Player : Entity
         // RIGHT
         if (GameInput.IsFunctionPressed(KeyFunctions.Right))
         {
-            Facing = Facing.E;
+            if (doTurn)
+            {
+                Facing = Facing.E;
+            }
+
             if ((WasTouching & Touching.RIGHT) == 0)
             {
                 Mover.TargetDirection.X += 1f;
@@ -155,18 +174,18 @@ public class Player : Entity
             }
         }
     }
-    
+
     public void SwordSwipe()
     {
         bool doCast = true;
         if (GameInput.IsFunctionPressed(KeyFunctions.Attack1))
         {
-            MathUtilities.MoveTo(ref SwordSwipiness, 1f, 2f);
+            MathUtilities.MoveTo(ref SwordSwipiness, 1f, 8f);
             SwordSwipinessT = MathHelper.Lerp(SwordSwipinessT, AnimUtility.EaseInSine(SwordSwipiness), 0.5f);
         }
-        else if (SwordSwipiness > 0.01f)
+        else if (SwordSwipinessT > 0.01f)
         {
-            MathUtilities.MoveTo(ref SwordSwipiness, 0f, 2f);
+            MathUtilities.MoveTo(ref SwordSwipiness, 0f, 16f);
             SwordSwipinessT = MathHelper.Lerp(SwordSwipinessT, AnimUtility.EaseOutSine(SwordSwipiness), 0.5f);
         }
         else
@@ -200,8 +219,20 @@ public class Player : Entity
     public override void Draw()
     {
         base.Draw();
-        SpriteDrawer.DrawSprite(PlayerSpriteSheet.Tex, Position, z: EntityUtilities.GetEntityZ(this));
-        SpriteDrawer.DrawLine(EntityCenter, EntityCenter + SwordTip, Color.White);
+        var frame = Facing switch
+        {
+            Facing.S => 0,
+            Facing.E => 3,
+            Facing.W => 1,
+            Facing.N => 2,
+            _ => 0
+        };
+        var rect = PlayerSpriteSheet.GetRect(frame);
+        SpriteDrawer.DrawSprite(PlayerSpriteSheet.Tex, Position - new Vector2(rect.Width,rect.Height) / 4, z: EntityUtilities.GetEntityZ(this), sRect:rect);
+        if (SwordSwipinessT > 0)
+        {
+            SpriteDrawer.DrawLine(EntityCenter, EntityCenter + SwordTip, Color.Blue);
+        }
     }
 
     public Vector2 GetVectorToPointer()
