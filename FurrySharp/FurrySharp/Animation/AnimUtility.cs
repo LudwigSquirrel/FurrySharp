@@ -20,4 +20,10 @@ public static class AnimUtility
     {
         return -(MathF.Cos(MathF.PI * x) - 1) / 2;
     }
+    
+    public static float EaseInOutCirc(float x) {
+        return x < 0.5f
+            ? (1 - MathF.Sqrt(1 - MathF.Pow(2 * x, 2))) / 2
+            : (MathF.Sqrt(1 - MathF.Pow(-2 * x + 2, 2)) + 1) / 2;
+    }
 }

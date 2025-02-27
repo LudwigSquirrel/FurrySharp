@@ -50,4 +50,9 @@ public class MathUtilities
     {
         return MathF.PI * 2 * radius;
     }
+
+    public static float TriangleWave(float t, float amplitude)
+    {
+        return MathF.Abs((t % (amplitude * 2)) - (amplitude));
+    }
 }

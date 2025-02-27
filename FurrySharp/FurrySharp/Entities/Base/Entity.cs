@@ -35,6 +35,7 @@ public class Entity
 
     public Vector2 Position;
     public Vector2 LastPosition;
+    public Vector2 EntityCenter => Position + HitBox.Center.ToVector2();
 
     public Rectangle HitBox;
     public Rectangle BoundingBox;

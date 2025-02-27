@@ -36,8 +36,8 @@ public class SandboxState : State
         base.Create();
         EntityManager.Spawn(out Player);
         Player.Position = new Vector2(TILE_SIZE, TILE_SIZE);
-        EntityManager.Spawn(out Player friendo);
-        friendo.Position = new Vector2(TILE_SIZE + TILE_SIZE, TILE_SIZE);
+        // EntityManager.Spawn(out Player friendo);
+        // friendo.Position = new Vector2(TILE_SIZE + TILE_SIZE, TILE_SIZE);
         Map = MapInfo.FromResources("maze1");
         EntityManager.Map = Map;
         AudioManager.PlaySong(Map.Settings.Music);
@@ -91,7 +91,7 @@ public class SandboxState : State
         Trail.DrawTrail(Map);
         Map.DrawLayer(SpriteDrawer.Camera.Bounds, (int)MapLayer.BG, DrawOrder.BG, false);
 
-        var start = Player.Position + Player.HitBox.Center.ToVector2();
+        var start = Player.EntityCenter;
         var end = SpriteDrawer.Camera.ScreenToWorld(GameInput.PointerScreenPosition.ToVector2());
         DDAResult result = Player.Map.DDA(start, end);
         SpriteDrawer.DrawDebugLine(start, result.End, result.TileFound ? Color.Red : Color.White);
