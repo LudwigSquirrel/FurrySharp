@@ -1,9 +1,14 @@
+using FurrySharp.Drawing;
 using FurrySharp.Input;
 using FurrySharp.Parsing;
+using FurrySharp.Resources;
 using FurrySharp.UI.Font;
 using FurrySharp.UI.Font.Writing;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using static FurrySharp.Registry.GameConstants;
 
 namespace FurrySharp.UI;
 
@@ -12,15 +17,23 @@ public class Terminal
     private string InputText;
     private TextWriter InputWriter;
     private TextWriter OutputWriter;
+    private Texture2D TerminalBG;
 
     public Terminal()
     {
         InputWriter = new TextWriter(new Point(1, 312), 68, 1, FontManager.InitFont(true));
         OutputWriter = new TextWriter(new Point(1, 8), 68, 38, FontManager.InitFont(true));
+        TerminalBG = ResourceManager.GetTexture("terminal_bg");
     }
 
     public void Draw()
     {
+        SpriteDrawer.DrawSprite(
+            TerminalBG,
+            sRect: new Rectangle((int)(GameTimes.TotalTime * 8), (int)(GameTimes.TotalTime * 4),GAME_WIDTH_IN_PIXELS, GAME_HEIGHT_IN_PIXELS),
+            rect: new Rectangle(0, 0, GAME_WIDTH_IN_PIXELS, GAME_HEIGHT_IN_PIXELS),
+            color: Color.White * 0.75f,
+            z: DrawingUtilities.GetDrawingZ(DrawOrder.TerminalBG));
         InputWriter.Draw();
         OutputWriter.Draw();
     }

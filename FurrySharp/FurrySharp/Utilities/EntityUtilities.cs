@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using FurrySharp.Drawing;
 using FurrySharp.Entities.Base;
+using FurrySharp.Maps;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rectangle = Microsoft.Xna.Framework.Rectangle;
@@ -12,6 +14,11 @@ public static class EntityUtilities
     public static Rectangle BoundingBoxFromTexture(Texture2D texture)
     {
         return new Rectangle(0, 0, texture?.Width ?? 1, texture?.Height ?? 1);
+    }
+    
+    public static Rectangle BoundingBoxFromSpritesheet(Spritesheet spritesheet)
+    {
+        return new Rectangle(0, 0, spritesheet?.Width ?? 1, spritesheet?.Height ?? 1);
     }
 
     public static bool SeparateEntityFromArea(Entity entity, FurRectangle area, Touching areaAllowCollisions, float overlapBias)
@@ -86,7 +93,6 @@ public static class EntityUtilities
         return false;
     }
     
-    // Same thing for Y axis
     private static bool SeparateEntityFromAreaY(Entity entity, FurRectangle area, Touching areaAllowCollisions, float overlapBias)
     {
         if (entity.Immovable)
@@ -146,5 +152,10 @@ public static class EntityUtilities
         }
         
         return false;
+    }
+
+    public static float GetEntityZ(Entity entity)
+    {
+        return DrawingUtilities.GetDrawingZ(DrawOrder.Entities, entity.Position.Y + entity.HitBox.Top, entity.Map.HeightInPixels);
     }
 }

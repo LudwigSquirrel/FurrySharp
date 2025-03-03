@@ -63,4 +63,9 @@ public class Camera
         actualPos = new Vector3(target, actualPos.Z);
         Recalc();
     }
+    
+    public Vector2 ScreenToWorld(Vector2 screenPos)
+    {
+        return Vector2.Transform(screenPos, Matrix.Invert(Transform));
+    }
 }

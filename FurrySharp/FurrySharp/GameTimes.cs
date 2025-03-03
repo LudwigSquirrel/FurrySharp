@@ -13,6 +13,8 @@ namespace FurrySharp
         public static float TimeScale { get; set; }
         public static float TrueDeltaTime { get; private set; }
 
+        public static float TotalTime { get; private set; }
+
         public static float DeltaTime
         {
             get { return TrueDeltaTime * TimeScale; }
@@ -28,6 +30,7 @@ namespace FurrySharp
         public static void UpdateTimes(GameTime gameTime)
         {
             TrueDeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            TotalTime = (float)gameTime.TotalGameTime.TotalSeconds;
         }
 
         public static void UpdateFPS(GameTime gameTime)

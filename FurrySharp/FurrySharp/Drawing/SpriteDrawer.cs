@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FurrySharp.Multiplatform;
 using FurrySharp.Utilities;
@@ -92,7 +93,7 @@ public static class SpriteDrawer
         SpriteBatch.End();
     }
 
-    public static void DrawSprite(Texture2D texture, Rectangle rect, Rectangle? sRect = null, Color? color = null, float rotation = 0, SpriteEffects flip = SpriteEffects.None, float z = 0)
+    public static void DrawSprite(Texture2D texture, Rectangle rect, Rectangle? sRect = null, Color? color = null, float rotation = 0, Vector2? origin = null, SpriteEffects flip = SpriteEffects.None, float z = 0)
     {
         var r = new Rectangle(rect.X + rect.Width / 2, rect.Y + rect.Height / 2, rect.Width, rect.Height);
 
@@ -103,11 +104,12 @@ public static class SpriteDrawer
             color: color ?? Color.White,
             rotation: rotation,
             // ReSharper disable twice PossibleLossOfFraction
-            origin: new Vector2((sRect ?? texture.Bounds).Width / 2, (sRect ?? texture.Bounds).Height / 2),
+            origin: origin ?? new Vector2((sRect ?? texture.Bounds).Width / 2, (sRect ?? texture.Bounds).Height / 2),
             effects: flip,
             layerDepth: z);
     }
 
+    // todo: rethink drawing commands. scale is not intuitive.
     public static void DrawSprite(Texture2D texture, Vector2 pos, Rectangle? sRect = null, Color? color = null, float rotation = 0, float scale = 1f, float z = 0)
     {
         SpriteBatch.Draw(
@@ -120,6 +122,36 @@ public static class SpriteDrawer
             scale: scale,
             effects: SpriteEffects.None,
             layerDepth: z);
+    }
+
+    public static void DrawLine(Vector2 start, Vector2 end, Color color, float z = 0)
+    {
+        var edge = end - start;
+        var angle = (float)Math.Atan2(edge.Y, edge.X);
+
+        SpriteBatch.Draw(
+            SolidTex,
+            new Rectangle((int)start.X, (int)start.Y, (int)edge.Length(), 1),
+            null,
+            color,
+            angle,
+            new Vector2(0, 0),
+            SpriteEffects.None,
+            z);
+    }
+
+    public static void DrawLines(Vector2[] points, Color color, bool closed = true, float z = 0)
+    {
+        var length = closed ? points.Length : points.Length - 1;
+        for (var i = 0; i < length; i++)
+        {
+            DrawLine(points[i], points[(i + 1) % points.Length], color, z);
+        }
+    }
+
+    public static void DrawDebugLine(Vector2 start, Vector2 end, Color color)
+    {
+        DrawLine(start, end, color, DrawingUtilities.GetDrawingZ(DrawOrder.DebugLine));
     }
 
     public static void UpdateRenderDestination(int displayWidth, int displayHeight, int scale)

@@ -15,7 +15,7 @@ namespace FurrySharp.Maps;
 
 public enum MapLayer
 {
-    BG,
+    BG, // defines the dimensions of the map.
 }
 
 public class MapInfo
@@ -25,11 +25,14 @@ public class MapInfo
 
     public Spritesheet TileSpritesheet { get; private set; }
 
-    public List<TileMap> TileMaps { get; private set; }
+    public List<TileMap> Layers { get; private set; }
 
-    public TileInfo TileInfo { get; private set; }
+    public TileDataContainer TileDataContainer { get; private set; }
 
     public MapSettings Settings { get; private set; }
+
+    public float WidthInPixels => Layers[(int)MapLayer.BG].Width * TILE_SIZE;
+    public float HeightInPixels => Layers[(int)MapLayer.BG].Height * TILE_SIZE;
 
     public static MapInfo FromResources(string name)
     {
@@ -40,25 +43,23 @@ public class MapInfo
 
     public static MapInfo FromDir(string path, bool critical = false)
     {
-        var map = new MapInfo()
+        MapInfo map = new()
         {
             MapPath = path,
             Critical = critical,
         };
 
-        // Foreach enum value in MapLayer, load the corresponding tilemap
-
         var values = Enum.GetValues(typeof(MapLayer));
-        map.TileMaps = new List<TileMap>(values.Length);
+        map.Layers = new List<TileMap>(values.Length);
         foreach (MapLayer layer in values)
         {
-            map.TileMaps.Add(new TileMap(map.LoadBmp(layer.ToString())));
+            map.Layers.Add(new TileMap(map.LoadBmp(layer.ToString())));
         }
 
         map.Settings = map.LoadJson<MapSettings>("settings") ?? new MapSettings();
 
         map.TileSpritesheet = new Spritesheet(ResourceManager.GetTexture($"{map.Settings.TileMap}_tilemap"), TILE_SIZE, TILE_SIZE);
-        map.TileInfo = TileInfo.FromResources(map.Settings.TileMap);
+        map.TileDataContainer = TileDataContainer.FromResources(map.Settings.TileMap);
 
         return map;
     }
@@ -79,7 +80,7 @@ public class MapInfo
             }
         }
 
-        return new int[,] { };
+        return new int[,] { { 0 } };
     }
 
     public T LoadJson<T>(string json)
@@ -106,8 +107,8 @@ public class MapInfo
     {
         float z = DrawingUtilities.GetDrawingZ(order);
 
-        Point tl = ToMapLoc(new(bounds.X, bounds.Y));
-        Point br = ToMapLoc(new(bounds.Right, bounds.Bottom));
+        Point tl = ToMapLoc(new Vector2(bounds.X, bounds.Y));
+        Point br = ToMapLoc(new Vector2(bounds.Right, bounds.Bottom));
 
         for (int y = tl.Y - 1; y < br.Y + 1; y++)
         {
@@ -133,6 +134,11 @@ public class MapInfo
     {
         return new(screenLoc.X / TILE_SIZE, screenLoc.Y / TILE_SIZE);
     }
+    
+    public Point ToMapLoc(Vector2 screenLoc)
+    {
+        return new((int)(screenLoc.X / TILE_SIZE), (int)(screenLoc.Y / TILE_SIZE));
+    }
 
     public Point TileToWorld(int x, int y)
     {
@@ -141,13 +147,13 @@ public class MapInfo
 
     public int GetTile(int layer, int x, int y)
     {
-        return TileMaps[layer].GetTile(x, y);
+        return Layers[layer].GetTile(x, y);
     }
 
     public void Collide(Entity entity)
     {
-        Point tl = ToMapLoc(new((int)(entity.Position.X + entity.HitBox.X), (int)(entity.Position.Y + entity.HitBox.Y)));
-        Point br = ToMapLoc(new((int)MathF.Ceiling(entity.Position.X + entity.HitBox.Right), (int)MathF.Ceiling(entity.Position.Y + entity.HitBox.Bottom)));
+        Point tl = ToMapLoc(new Vector2(entity.Position.X + entity.HitBox.X, entity.Position.Y + entity.HitBox.Y));
+        Point br = ToMapLoc(new Vector2(MathF.Ceiling(entity.Position.X + entity.HitBox.Right), MathF.Ceiling(entity.Position.Y + entity.HitBox.Bottom)));
 
         for (int y = tl.Y; y <= br.Y; y++)
         {
@@ -160,26 +166,26 @@ public class MapInfo
                     continue;
                 }
 
-                TileInfo.TileData data = TileInfo.GetData(tile);
+                TileDataContainer.TileData data = TileDataContainer.GetData(tile);
                 FurRectangle tileArea = new FurRectangle(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 CollideTile(entity, data, tileArea);
             }
         }
     }
 
-    public static void CollideTile(Entity entity, TileInfo.TileData tile, FurRectangle tileArea)
+    public static void CollideTile(Entity entity, TileDataContainer.TileData tile, FurRectangle tileArea)
     {
         if (tile.CollisionDirection != Touching.NONE)
         {
             EntityUtilities.SeparateEntityFromArea(entity, tileArea, tile.CollisionDirection, 16f);
         }
     }
-    
+
     public Touching GetCollisionData(float x, float y)
     {
-        Point loc = ToMapLoc(new((int)x, (int)y));
+        Point loc = ToMapLoc(new Vector2(x, y));
         int tile = GetTile((int)MapLayer.BG, loc.X, loc.Y);
-        TileInfo.TileData data = TileInfo.GetData(tile);
+        TileDataContainer.TileData data = TileDataContainer.GetData(tile);
         return data.CollisionDirection;
     }
 }

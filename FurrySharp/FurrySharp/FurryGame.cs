@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -57,6 +58,13 @@ public class FurryGame : Game, IStateSetter
         {
             Directory.CreateDirectory(SavePath + "Saves/");
         }
+
+        if (!Directory.Exists(SavePath + "OttoSaves/"))
+        {
+            Directory.CreateDirectory(SavePath + "OttoSaves/");
+        }
+
+        ResourceInstanceAutoSaver.AutoSaveDir = SavePath + "OttoSaves/";
     }
 
     protected override void Initialize()
@@ -98,20 +106,19 @@ public class FurryGame : Game, IStateSetter
             Exit();
 
         GameTimes.UpdateTimes(gameTime);
-        KeyInput.UpdateInputs();
-        MouseInput.UpdatePositions();
+        GameInput.UpdateInputs();
 
-        if (KeyInput.JustPressedKey(Keys.F12))
+        if (GameInput.JustPressedKey(Keys.F12))
         {
             GlobalState.ShowFPS = !GlobalState.ShowFPS;
         }
-        
-        if (KeyInput.JustPressedKey(Keys.F3))
+
+        if (GameInput.JustPressedKey(Keys.F3))
         {
             GlobalState.ShowDevTools = !GlobalState.ShowDevTools;
         }
 
-        if (KeyInput.JustPressedKey(Keys.OemTilde))
+        if (GameInput.JustPressedKey(Keys.OemTilde))
         {
             GlobalState.ShowTerminal = !GlobalState.ShowTerminal;
             if (GlobalState.ShowTerminal)
@@ -124,7 +131,7 @@ public class FurryGame : Game, IStateSetter
             }
         }
 
-        if (KeyInput.JustPressedKey(Keys.Enter) && (KeyInput.IsKeyPressed(Keys.LeftAlt) || KeyInput.IsKeyPressed(Keys.RightAlt)))
+        if (GameInput.JustPressedKey(Keys.Enter) && GameInput.IsKeyPressed(Keys.LeftAlt))
         {
             if (GlobalState.GetResolution() == Resolution.Windowed)
             {
@@ -189,20 +196,21 @@ public class FurryGame : Game, IStateSetter
             {
                 CurrentState.DoIMGUI();
             }
+
             DeerImGooeyRenderer.EndLayout();
         }
     }
 
     public void CreateAndSetState<T>() where T : State, new()
     {
-        // foreach (var effect in GlobalState.AllEffects)
-        // {
-        //     effect.Deactivate();
-        // }
-
         CurrentState = new T();
-
         CurrentState.Create();
+    }
+
+    public void CreateAndSetState(Type type)
+    {
+        CurrentState = (State)Activator.CreateInstance(type);
+        CurrentState!.Create();
     }
 
     private void InitGraphics()

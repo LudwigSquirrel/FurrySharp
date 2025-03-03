@@ -14,7 +14,8 @@ public static class Program
     {
         RunNormally();
     }
-    
+
+#if DEBUG
     public static bool RunWithTest(GameLoopTestBundle test)
     {
         FurryGame = new FurryGame();
@@ -22,6 +23,7 @@ public static class Program
         RunGame();
         return FurryGame.Test.Passed;
     }
+#endif
 
     public static void RunNormally()
     {
@@ -39,6 +41,22 @@ public static class Program
         catch (Exception ex)
         {
             DebugLogger.AddException(ex);
+            /*
+             * Proof of concept: somehow run auto savers in event of crash.
+             */
+            // foreach (var autoSaver in FurryGame.AutoSavers)
+            // {
+            //     try
+            //     {
+            //         autoSaver.PerformSave();
+            //     }
+            //     catch
+            //     {
+            //         DebugLogger.AddCritical($"Could not perform save for resource {autoSaver.ResourceName}");
+            //         DebugLogger.AddException(ex);
+            //     }
+            // }
+
             throw;
         }
     }

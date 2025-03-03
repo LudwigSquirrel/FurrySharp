@@ -2,18 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using FurrySharp.Drawing;
 using FurrySharp.Logging;
 using FurrySharp.Registry;
+using FurrySharp.Utilities;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Resources;
 
 public static class ResourceManager
 {
     private static Dictionary<string, Texture2D> textures = new();
+    private static Dictionary<string, CatSpline> splines = new();
     private static Dictionary<string, string> music = new();
     private static Dictionary<string, string> ambience = new();
     private static Dictionary<string, string> map = new();
@@ -33,6 +37,7 @@ public static class ResourceManager
         LoadAmbience();
         LoadMaps();
         LoadTileMaps();
+        LoadSplines();
         return true;
     }
 
@@ -109,6 +114,22 @@ public static class ResourceManager
 
         return tilemaps[tileMapName];
     }
+    
+    public static CatSpline GetSpline(string splineName)
+    {
+        if (!splines.ContainsKey(splineName))
+        {
+            DebugLogger.AddWarning($"Spline file called {splineName}.json not found!");
+            return null;
+        }
+
+        return splines[splineName];
+    }
+    
+    public static Dictionary<string, CatSpline>.KeyCollection GetSplineKeys()
+    {
+        return splines.Keys;
+    }
 
     public static bool UnloadResources()
     {
@@ -170,6 +191,26 @@ public static class ResourceManager
             {
                 textures[key] = Texture2D.FromFile(SpriteDrawer.SpriteBatch.GraphicsDevice, file.FullName);
                 DebugLogger.AddError($"Failed to load texture: {key}");
+            }
+        }
+    }
+
+    private static void LoadSplines()
+    {
+        foreach (FileInfo file in GetFiles("splines"))
+        {
+            string key = Path.GetFileNameWithoutExtension(file.Name);
+            try
+            {
+                string splineData = File.ReadAllText(file.FullName);
+                splines[key] = JsonSerializer.Deserialize<CatSpline>(splineData, new JsonSerializerOptions()
+                {
+                    IncludeFields = true,
+                });
+            }
+            catch (Exception)
+            {
+                DebugLogger.AddError($"Failed to load spline: {key}");
             }
         }
     }

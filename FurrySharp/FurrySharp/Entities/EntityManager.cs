@@ -5,6 +5,7 @@ using FurrySharp.Entities.Base;
 using FurrySharp.Logging;
 using FurrySharp.Maps;
 using FurrySharp.Registry;
+using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
 
 namespace FurrySharp.Entities;
@@ -130,5 +131,29 @@ public class EntityManager
         result = result || offEntities.Remove(entity);
         result = result && collisionGroups.Unregister(entity);
         return result;
+    }
+    
+    public RayCastResult RayCast<TTarget>(Vector2 start, Vector2 end, Entity excluding = null) where TTarget : Entity
+    {
+        if (Map != null)
+        {
+            DDAResult ddaResult = Map.DDA(start, end);
+            EntityCastResult entityCastResult = collisionGroups.RaycastForEntity<TTarget>(start, ddaResult.End, excluding);
+
+            return new RayCastResult()
+            {
+                DDAResult = ddaResult,
+                EntityCastResult = entityCastResult,
+            };
+        }
+        else
+        {
+            EntityCastResult entityCastResult = collisionGroups.RaycastForEntity<TTarget>(start, end, excluding);
+
+            return new RayCastResult()
+            {
+                EntityCastResult = entityCastResult,
+            };
+        }
     }
 }

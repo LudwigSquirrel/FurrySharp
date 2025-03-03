@@ -19,6 +19,9 @@ public sealed class CollisionAttribute : Attribute
     // Whether this entity is part of the map. Used for things like 'signs' or 'doors'.
     public bool MapEntity { get; set; }
     
+    // Whether this entity can get hit by raycasts.
+    public bool RayCastable { get; set; }
+
     /* Ideas for expansion/optimization:
      * Add a property to specify that the entity is only collidable with entities that are on screen. Useful for player to enemy collisions.
      * Only calculate collisions using entities that have moved since the last frame.

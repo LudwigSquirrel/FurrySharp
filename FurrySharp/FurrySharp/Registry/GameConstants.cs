@@ -19,9 +19,9 @@ public class GameConstants
     {
         SavePath =
 #if DEBUG
-        "./";
+            Directory.GetCurrentDirectory() + '\\';
 #else
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData,Environment.SpecialFolderOption.Create),"FurrySharp/");
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData,Environment.SpecialFolderOption.Create),"FurrySharp/");
 #endif
     }
 

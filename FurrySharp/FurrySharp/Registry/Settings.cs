@@ -32,8 +32,8 @@ public class Settings
     [JsonInclude]
     public Dictionary<KeyFunctions, RebindableKey> KeyBindings
     {
-        get => KeyInput.RebindableKeys;
-        set => KeyInput.RebindableKeys = value;
+        get => GameInput.RebindableKeys;
+        set => GameInput.RebindableKeys = value;
     }
 
     public static Settings Load()
@@ -67,11 +67,20 @@ public class Settings
         ValidateHelper(KeyFunctions.Down, new RebindableKey(new List<Keys>() { Keys.S, Keys.Down }));
         ValidateHelper(KeyFunctions.Left, new RebindableKey(new List<Keys>() { Keys.A, Keys.Left }));
         ValidateHelper(KeyFunctions.Right, new RebindableKey(new List<Keys>() { Keys.D, Keys.Right }));
+        ValidateHelper(KeyFunctions.Attack1, new RebindableKey(new List<Keys>() { Keys.J, Keys.Z }));
         return;
 
         void ValidateHelper(KeyFunctions function, RebindableKey defaultKey)
         {
-            KeyBindings.TryAdd(function, defaultKey);
+            bool added = KeyBindings.TryAdd(function, defaultKey);
+            if (!added)
+            {
+                // If the key is already in the dictionary, make sure it has a list of keys and mouse buttons.
+                var rebindableKey = KeyBindings[function];
+                rebindableKey.Keys ??= new();
+                rebindableKey.MouseButts ??= new();
+                KeyBindings[function] = rebindableKey;
+            }
         }
     }
 }
