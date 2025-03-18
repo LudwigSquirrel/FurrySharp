@@ -30,6 +30,9 @@ public class MapInfo
     public TileDataContainer TileDataContainer { get; private set; }
 
     public MapSettings Settings { get; private set; }
+    
+    public int Width => Layers[(int)MapLayer.BG].Width;
+    public int Height => Layers[(int)MapLayer.BG].Height;
 
     public float WidthInPixels => Layers[(int)MapLayer.BG].Width * TILE_SIZE;
     public float HeightInPixels => Layers[(int)MapLayer.BG].Height * TILE_SIZE;
@@ -179,6 +182,13 @@ public class MapInfo
         {
             EntityUtilities.SeparateEntityFromArea(entity, tileArea, tile.CollisionDirection, 16f);
         }
+    }
+
+    public Touching GetCollisionData(int x, int y)
+    {
+        int tile = GetTile((int)MapLayer.BG, x, y);
+        TileDataContainer.TileData data = TileDataContainer.GetData(tile);
+        return data.CollisionDirection;
     }
 
     public Touching GetCollisionData(float x, float y)

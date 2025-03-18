@@ -41,6 +41,8 @@ public class TileDataContainer
                 info.Data[i].CollisionDirection = c.Allowed;
             }
         }
+        
+        // todo: Add g cost manipulation in next project.
 
         return info;
     }
@@ -53,5 +55,6 @@ public class TileDataContainer
     public class TileData
     {
         public Touching CollisionDirection { get; set; } = Touching.ANY;
+        public float ExtraGCost = 0f;
     }
 }

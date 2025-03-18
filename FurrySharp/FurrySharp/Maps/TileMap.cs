@@ -23,4 +23,6 @@ public class TileMap
         }
         return tiles[x, y];
     }
+
+    public int[,] GetMap() => tiles;
 }

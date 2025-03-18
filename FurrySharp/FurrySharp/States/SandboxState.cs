@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using FurrySharp.Audio;
 using FurrySharp.Drawing;
 using FurrySharp.Entities;
 using FurrySharp.Entities.Player;
 using FurrySharp.Input;
 using FurrySharp.Maps;
+using FurrySharp.Maps.PathFinding;
 using FurrySharp.Resources;
 using FurrySharp.UI;
 using ImGuiNET;
 using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
-
+using Microsoft.Xna.Framework.Input;
 using static FurrySharp.Registry.GameConstants;
 
 namespace FurrySharp.States;
@@ -28,6 +30,12 @@ public class SandboxState : State
     public FingyCursor FingyCursor = new();
 
     public Trail Trail = new();
+
+    public GridAS GridAS;
+
+    public Vector2 FingyPos;
+
+    public List<Point> Path = new();
 
     // public Spline BezierCurve = new();
 
@@ -46,7 +54,9 @@ public class SandboxState : State
         Spritesheet spritesheet = new Spritesheet(ResourceManager.GetTexture("ludwig_player"), 32, 32);
         Trail.AddDefaultUnits(20);
         Trail.Spritesheet = spritesheet;
-        
+
+        GridAS = new GridAS(Map);
+
         // BezierCurve.Segments.Add(new BezierCurve()
         // {
         //     A = new Vector2(TILE_SIZE * 5, TILE_SIZE * 5),
@@ -81,6 +91,20 @@ public class SandboxState : State
         SpriteDrawer.Camera.CenterOn((Player.Position.ToPoint() + Player.HitBox.Center).ToVector2());
         EntityManager.PostUpdateEntities();
         EntityManager.DoOnScreen();
+        
+        FingyPos = SpriteDrawer.Camera.ScreenToWorld(GameInput.PointerScreenPosition.ToVector2());
+        if (GameInput.IsKeyPressed(Keys.P))
+        {
+            AgentAS agent = new AgentAS()
+            {
+                UseDiagonals = false,
+                SearchLimit = 20,
+                AcceptPathToBestHeuristic = true
+            };
+            var start = Map.ToMapLoc(Player.EntityCenter);
+            var end = Map.ToMapLoc(FingyPos);
+            Path = GridAS.GetPath(agent, start, end) ?? new List<Point>();
+        }
     }
     
     public override void DrawState()
@@ -90,13 +114,14 @@ public class SandboxState : State
         Map.DrawLayer(SpriteDrawer.Camera.Bounds, (int)MapLayer.BG, DrawOrder.BG, false);
 
         var start = Player.EntityCenter;
-        var end = SpriteDrawer.Camera.ScreenToWorld(GameInput.PointerScreenPosition.ToVector2());
+        var end = FingyPos;
         DDAResult result = Player.Map.DDA(start, end);
         // SpriteDrawer.DrawDebugLine(start, result.End, result.TileFound ? Color.Red : Color.White);
         //foreach (var point in result.Visited)
         //{
             //SpriteDrawer.DrawSprite(SpriteDrawer.SolidTex, new Rectangle(point.X * TILE_SIZE, point.Y * TILE_SIZE, TILE_SIZE, TILE_SIZE), color: Color.Yellow);
         //}
+        SpriteDrawer.DrawLines(Path.Select(point => point.ToVector2() * TILE_SIZE + new Vector2(TILE_SIZE/2,TILE_SIZE/2)).ToArray(), Color.DarkRed, closed: false);
     }
 
     public override void DrawUI()
