@@ -1,9 +1,11 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FurrySharp.Entities.Base;
 using FurrySharp.Maps.Tiles;
 using Microsoft.Xna.Framework;
+using static FurrySharp.Registry.GameConstants;
 
 namespace FurrySharp.Maps.PathFinding;
 
@@ -17,6 +19,12 @@ public class GridAS
     public GridAS(MapInfo map)
     {
         MapInfo = map;
+    }
+
+    public List<Vector2>? GetPathWithMapLoc(AgentAS agent, Vector2 start, Vector2 end)
+    {
+        List<Point>? points = GetPath(agent, MapInfo.ToMapLoc(start), MapInfo.ToMapLoc(end));
+        return points?.Select(point => new Vector2(point.X * TILE_SIZE + TILE_SIZE_HALF, point.Y * TILE_SIZE + TILE_SIZE_HALF)).ToList();
     }
 
     public List<Point>? GetPath(AgentAS agent, Point start, Point end)

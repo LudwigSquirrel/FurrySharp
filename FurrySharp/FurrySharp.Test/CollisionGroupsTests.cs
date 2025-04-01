@@ -109,6 +109,11 @@ public class CollisionGroupsTests
         Assert.That(result.WasHit, Is.False);
         Assert.That(result.Entity, Is.Null);
         
+        // Raycast from 0,10 to 0,5. Should not hit.
+        result = collisionGroup.RaycastForEntity<YourDad>(new Vector2(0, 10), new Vector2(0, 5));
+        Assert.That(result.WasHit, Is.False);
+        Assert.That(result.Entity, Is.Null);
+        
         // Raycast for non-raycastable entity. Should not hit.
         result = collisionGroup.RaycastForEntity<Me>(Vector2.Zero, new Vector2(10, 0));
         Assert.That(result.WasHit, Is.False);

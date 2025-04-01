@@ -47,10 +47,10 @@ public class InGameTests
 
     private static IEnumerator TestPlayerWalkingUpTheTilesCheeks()
     {
-        Sandbox.Player.Position = new Vector2(TILE_SIZE * 1.5f, TILE_SIZE);
+        Sandbox.PlayerEntity.Position = new Vector2(TILE_SIZE * 1.5f, TILE_SIZE);
         GameInput.MockHeld(Keys.Up);
         yield return TimeSpan.FromSeconds(1);
-        Assert.That(Sandbox.Player.Position.Y, Is.GreaterThanOrEqualTo(0));
+        Assert.That(Sandbox.PlayerEntity.Position.Y, Is.GreaterThanOrEqualTo(0));
         yield return true;
     }
 

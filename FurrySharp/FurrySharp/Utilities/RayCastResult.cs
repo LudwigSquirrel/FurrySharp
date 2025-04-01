@@ -9,5 +9,5 @@ namespace FurrySharp.Utilities;
 public struct RayCastResult
 {
     public DDAResult? DDAResult;
-    public EntityCastResult? EntityCastResult;
+    public EntityCastResult EntityCastResult;
 }

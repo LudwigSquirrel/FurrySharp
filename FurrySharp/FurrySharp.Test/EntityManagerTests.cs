@@ -1,4 +1,5 @@
 ﻿using FurrySharp.Entities;
+using FurrySharp.Entities.Player;
 using FurrySharp.States;
 
 namespace FurrySharp.Test;
@@ -9,9 +10,9 @@ public class EntityManagerTests
     public void EntityManagerTest()
     {
         var entityManager = new EntityManager();
-        var result = entityManager.Spawn("Player", out _);
+        var result = entityManager.Spawn(nameof(PlayerEntity), out _);
         Assert.True(result);
-        result = entityManager.Spawn("player", out _);
+        result = entityManager.Spawn(nameof(PlayerEntity).ToLower(), out _);
         Assert.True(result);
         result = entityManager.Spawn("your mom", out _);
         Assert.False(result);

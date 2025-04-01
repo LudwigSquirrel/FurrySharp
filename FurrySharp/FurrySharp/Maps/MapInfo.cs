@@ -5,6 +5,7 @@ using System.Text.Json;
 using FurrySharp.Drawing;
 using FurrySharp.Entities.Base;
 using FurrySharp.Logging;
+using FurrySharp.Maps.PathFinding;
 using FurrySharp.Maps.Tiles;
 using FurrySharp.Resources;
 using FurrySharp.Utilities;
@@ -30,6 +31,8 @@ public class MapInfo
     public TileDataContainer TileDataContainer { get; private set; }
 
     public MapSettings Settings { get; private set; }
+    
+    public GridAS GridAS { get; private set; }
     
     public int Width => Layers[(int)MapLayer.BG].Width;
     public int Height => Layers[(int)MapLayer.BG].Height;
@@ -63,6 +66,8 @@ public class MapInfo
 
         map.TileSpritesheet = new Spritesheet(ResourceManager.GetTexture($"{map.Settings.TileMap}_tilemap"), TILE_SIZE, TILE_SIZE);
         map.TileDataContainer = TileDataContainer.FromResources(map.Settings.TileMap);
+
+        map.GridAS = new GridAS(map);
 
         return map;
     }

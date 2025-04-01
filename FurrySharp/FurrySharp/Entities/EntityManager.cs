@@ -1,7 +1,9 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using FurrySharp.Drawing;
 using FurrySharp.Entities.Base;
+using FurrySharp.Entities.Player;
 using FurrySharp.Logging;
 using FurrySharp.Maps;
 using FurrySharp.Registry;
@@ -17,7 +19,8 @@ public class EntityManager
     private List<Entity> offEntities = new(); // off screen, and not being drawn
     private CollisionGroups collisionGroups = new();
 
-    public MapInfo Map;
+    public MapInfo? Map;
+    public PlayerEntity? Player;
 
     // todo: implement a way to pass parameters for initialization to entities.
     // this overload is for when you want to spawn an entity that you know the type of.
@@ -56,13 +59,15 @@ public class EntityManager
 
     public void UpdateEntities()
     {
-        foreach (Entity entity in onEntities)
+        for (var i = 0; i < onEntities.Count; i++)
         {
+            var entity = onEntities[i];
             entity.Update();
         }
 
-        foreach (Entity entity in offEntities)
+        for (var i = 0; i < offEntities.Count; i++)
         {
+            var entity = offEntities[i];
             entity.Update();
         }
     }
@@ -138,7 +143,8 @@ public class EntityManager
         if (Map != null)
         {
             DDAResult ddaResult = Map.DDA(start, end);
-            EntityCastResult entityCastResult = collisionGroups.RaycastForEntity<TTarget>(start, ddaResult.End, excluding);
+            Vector2 endToUse = end != ddaResult.End ? ddaResult.End : end;
+            EntityCastResult entityCastResult = collisionGroups.RaycastForEntity<TTarget>(start, endToUse, excluding);
 
             return new RayCastResult()
             {

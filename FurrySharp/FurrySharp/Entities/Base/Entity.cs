@@ -39,6 +39,11 @@ public class Entity
 
     public Rectangle HitBox;
     public Rectangle BoundingBox;
+    
+    public Rectangle GetHitBoxWithPosition(Vector2 position)
+    {
+        return new Rectangle((int)position.X + HitBox.X, (int)position.Y + HitBox.Y, HitBox.Width, HitBox.Height);
+    }
 
     public float HitRadius;
 
@@ -76,7 +81,7 @@ public class Entity
         
         if (GlobalState.DrawHitRadii)
         {
-            Vector2[] points = MathUtilities.PlotCircle(Position + HitBox.Center.ToVector2(), HitRadius, 8);
+            Vector2[] points = MathUtilities.PlotCircle(EntityCenter, HitRadius, 8);
             SpriteDrawer.DrawLines(points, Color.White);
         }
     }

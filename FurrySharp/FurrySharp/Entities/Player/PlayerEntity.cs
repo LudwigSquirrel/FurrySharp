@@ -3,6 +3,7 @@ using FurrySharp.Animation;
 using FurrySharp.Drawing;
 using FurrySharp.Entities.Base;
 using FurrySharp.Entities.Components;
+using FurrySharp.Entities.Hostiles;
 using FurrySharp.Input;
 using FurrySharp.Logging;
 using FurrySharp.Maps;
@@ -14,7 +15,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace FurrySharp.Entities.Player;
 
 [Collision(MapCollider = true, RayCastable = true)]
-public class Player : Entity
+public class PlayerEntity : Entity
 {
     Spritesheet PlayerSpriteSheet;
     public VelMover Mover;
@@ -23,18 +24,18 @@ public class Player : Entity
 
     public float SwordSwipiness;
     public float SwordSwipinessT;
-    public float SwordLength = 32f;
-    public float SwipeSpeed = 2f;
-    public float SwipeArc = 45f;
+    public float SwordLength = 64f;
+    public float SwipeSpeed = 4f;
+    public float SwipeArc = 90f;
     public Vector2 SwordTip;
 
-    public Player()
+    public PlayerEntity()
     {
         PlayerSpriteSheet = new Spritesheet(ResourceManager.GetTexture("ludwig_handsome"), 64, 64);
 
         SwordTexture = ResourceManager.GetTexture("sword");
 
-        BoundingBox = EntityUtilities.BoundingBoxFromSpritesheet(PlayerSpriteSheet);
+        BoundingBox = EntityUtilities.BoundingBoxFrom(PlayerSpriteSheet);
         HitBox = new Rectangle(11, 16, 11, 10);
         HitRadius = 16f;
         Mover = new VelMover();
@@ -212,7 +213,19 @@ public class Player : Entity
                 x: SwordLength * SwordSwipinessT * MathF.Cos(thetaT),
                 y: SwordLength * SwordSwipinessT * MathF.Sin(thetaT)
             );
-            RayCastResult result = Manager.RayCast<Player>(EntityCenter, EntityCenter + SwordTip, this);
+
+            RayCastResult result;
+            int casts = 0;
+            do
+            {
+                result = Manager.RayCast<Nudwig>(EntityCenter, EntityCenter + SwordTip);
+                if (result.EntityCastResult.WasHit)
+                {
+                    // todo: damage enemy.
+                    Manager.RemoveEntity(result.EntityCastResult.Entity);
+                }
+                casts++;
+            } while(result.EntityCastResult.WasHit && casts < 3);
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FurrySharp.Entities.Base;
+using FurrySharp.Entities.Enemy;
 using FurrySharp.Maps;
 using FurrySharp.Utilities;
 using Microsoft.Xna.Framework;
@@ -28,6 +29,7 @@ public class CollisionGroups
     private readonly List<Entity> mapColliders = new();
     private readonly List<Entity> mapEntities = new();
     private readonly List<Entity> raycastEntities = new();
+    private readonly List<Entity> enemies = new();
 
     public void Register(Entity entity)
     {
@@ -38,6 +40,11 @@ public class CollisionGroups
         for (Type d = t; d != typeof(Entity); d = d.BaseType)
         {
             Get(d).Targets.Add(entity);
+        }
+
+        if (t.IsDefined(typeof(EnemyAttribute), false))
+        {
+            enemies.Add(entity);
         }
 
         IEnumerable<CollisionAttribute> cs = t.GetCustomAttributes<CollisionAttribute>().ToArray();
@@ -107,7 +114,7 @@ public class CollisionGroups
             {
                 foreach (Entity target in g.Targets.Where(e => !ReferenceEquals(e, collider)))
                 {
-                    if (collider.HitBox.Intersects(target.HitBox))
+                    if (collider.GetHitBoxWithPosition(collider.Position).Intersects(target.GetHitBoxWithPosition(target.Position)))
                     {
                         collider.Collided(target);
                     }
@@ -139,6 +146,35 @@ public class CollisionGroups
                 continue;
             }
 
+            var result = CircleLineIntersection.Intersect(
+                circleCenter: target.Position,
+                radius: target.HitRadius,
+                lineStart: start,
+                lineEnd: end
+            );
+
+            if (result.Intersects && result.MinRealT < minT)
+            {
+                minT = result.MinRealT;
+                closest = target;
+                circleLine = result;
+            }
+        }
+
+        return new EntityCastResult
+        {
+            Entity = closest,
+            CircleLineIntersection = circleLine,
+        };
+    }
+
+    public EntityCastResult RaycastForEnemy(Vector2 start, Vector2 end)
+    {
+        float minT = float.MaxValue;
+        Entity closest = null;
+        CircleLineIntersectionResult circleLine = default;
+        foreach (Entity target in enemies)
+        {
             var result = CircleLineIntersection.Intersect(
                 circleCenter: target.Position,
                 radius: target.HitRadius,

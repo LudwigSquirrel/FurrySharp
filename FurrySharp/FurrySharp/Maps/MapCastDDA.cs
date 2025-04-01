@@ -30,6 +30,7 @@ public static class MapCastDDA
     {
         // vStart is the starting position of the ray. It is divided by TILE_SIZE because those are our units.
         vStart /= TILE_SIZE;
+        maxDistance /= TILE_SIZE;
         // vRayUnitStepSize represents the distance the ray needs to travel along the x and y axes
         // to move from one grid line to the next. It is calculated based on the direction (a unit vector) of the ray
         // and ensures that the ray progresses uniformly in both x and y directions.
@@ -109,7 +110,7 @@ public static class MapCastDDA
         {
             TileFound = bTileFound,
             TilePosition = vMapCheck,
-            End = (vStart * TILE_SIZE) + (vDirection * (fDistance * TILE_SIZE)),
+            End = (vStart * TILE_SIZE) + (vDirection * (MathF.Min(fDistance, maxDistance) * TILE_SIZE)),
             Visited = visited,
         };
     }

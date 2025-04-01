@@ -179,11 +179,11 @@ public static class TerminalCommands
     {
         if (Program.FurryGame.CurrentState is SandboxState sandboxState)
         {
-            var entity = sandboxState.Player;
+            var entity = sandboxState.PlayerEntity;
             var oldPosition = entity.Position;
             sandboxState.EntityManager.RemoveEntity(entity);
             sandboxState.EntityManager.Spawn(out entity);
-            sandboxState.Player = entity;
+            sandboxState.PlayerEntity = entity;
             entity.Position = oldPosition;
             output.PrintInfo("Respawned player.");
         }

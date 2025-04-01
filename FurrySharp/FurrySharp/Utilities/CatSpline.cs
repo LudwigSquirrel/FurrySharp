@@ -95,7 +95,7 @@ public class CatSpline
             }
             else
             {
-                return 1;
+                return ControlPoints.Count;
             }
         }
 
